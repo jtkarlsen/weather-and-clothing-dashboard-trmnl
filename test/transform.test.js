@@ -24,6 +24,14 @@ test('after 17:00 the board shows tomorrow', () => {
   assert.equal(r.date, 'Lørdag 17. oktober');
 });
 
+test('each garment has one label: wear it now or pack it', () => {
+  const r = build(fixture, new Date('2026-10-16T04:30:00Z'));
+  for (const it of r.items) assert.ok(['on', 'bag'].includes(it.status));
+  const firstBag = r.items.findIndex(it => it.status === 'bag');
+  assert.ok(r.items.slice(firstBag).every(it => it.status === 'bag'), 'things to wear come first');
+  assert.equal(r.items.find(it => it.key === 'skiftetoy').label, 'I sekken');
+});
+
 test('one variant per garment, so never two kinds of mittens', () => {
   const r = build(fixture, new Date('2026-10-16T16:30:00Z'));
   const icons = r.items.map(i => i.icon);

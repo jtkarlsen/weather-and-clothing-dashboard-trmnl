@@ -6,7 +6,7 @@
       <div><div class="kc-t">{{ now.temp }}</div><div class="kc-f">{{ now.feels }}</div></div>
     </div>
     <div class="kc-list">
-      {% for it in items %}{% if it.m == "on" %}
+      {% for it in items %}{% if it.status == "on" %}
       <span class="kc-chip on"><svg><use href="#kc-{{ it.icon }}"/></svg>{{ it.name }}</span>
       {% endif %}{% endfor %}
     </div>

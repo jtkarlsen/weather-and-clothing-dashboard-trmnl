@@ -12,8 +12,8 @@ scales down to the original TRMNL and to mashup slots.
 - The weather on the way to school (07–11) and in the afternoon (12–17), with wind chill
   ("føles som").
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
-- An outfit grid where each garment says **Ha på** (wear it), **I sekken** (pack it) or
-  **Nei** (not needed), next to a sunrise for the morning and a high sun for the afternoon for the morning and the afternoon.
+- An outfit grid with one label per garment: **Ha på** (wear it on the way to school) or
+  **I sekken** (pack it, because it is only needed later in the day or is optional).
 - A reminder at the bottom, such as the reflector vest when it is dark on the way to school.
 
 After 17:00 the screen switches to tomorrow's plan.

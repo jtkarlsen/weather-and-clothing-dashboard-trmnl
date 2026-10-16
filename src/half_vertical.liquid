@@ -13,9 +13,9 @@
     </div>
     <h2 class="kc-sub">Ha på deg</h2>
     <div class="kc-list">
-      {% for it in items %}{% if it.m != "no" %}
-      <span class="kc-chip {{ it.m }}"><svg><use href="#kc-{{ it.icon }}"/></svg>{{ it.name }}</span>
-      {% endif %}{% endfor %}
+      {% for it in items %}
+      <span class="kc-chip {{ it.status }}"><svg><use href="#kc-{{ it.icon }}"/></svg>{{ it.name }}</span>
+      {% endfor %}
     </div>
     <div class="kc-tip kc-end"><svg><use href="#kc-varsel"/></svg>{{ tip }}</div>
   </div>

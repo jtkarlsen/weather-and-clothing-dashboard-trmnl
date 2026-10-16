@@ -10,7 +10,7 @@ const PERIODS = {
 };
 const STRIP_HOURS = [7, 9, 11, 13, 15, 17];
 const SWITCH_TO_TOMORROW_AT = 17; // after this local hour, show tomorrow
-const STATUS_LABEL = { on: 'Ha på', bag: 'I sekken', no: 'Nei' };
+const STATUS_LABEL = { on: 'Ha på', bag: 'I sekken' };
 const MAX_ITEMS = 10;
 
 // ---------- input helpers ----------
@@ -235,6 +235,15 @@ function outfit(s) {
 const STRONGER = { no: 0, bag: 1, on: 2 };
 const stronger = (x, y) => (STRONGER[x] >= STRONGER[y] ? x : y);
 
+// One label per garment, because kids get dressed once, in the morning:
+// "Ha på" if it is needed on the way to school, "I sekken" if it is only
+// needed later in the day or is optional.
+function dayStatus(m, a) {
+  if (m === 'on') return 'on';
+  if (m === 'bag' || a !== 'no') return 'bag';
+  return 'no';
+}
+
 function mergeOutfits(morning, afternoon) {
   // Items sharing an icon are variants of one garment (e.g. boots). The warmest
   // variant needed in either period is shown, so a kid never sees two pairs of boots.
@@ -247,13 +256,16 @@ function mergeOutfits(morning, afternoon) {
     if (seen) { seen.m = stronger(seen.m, m); seen.a = stronger(seen.a, a); }
     else byIcon.set(icon, { key, name, icon, m, a });
   }
-  const items = [...byIcon.values()].map(it => ({ ...it, m_label: STATUS_LABEL[it.m], a_label: STATUS_LABEL[it.a] }));
+  const items = [...byIcon.values()]
+    .map(({ key, name, icon, m, a }) => {
+      const status = dayStatus(m, a);
+      return { key, name, icon, status, label: STATUS_LABEL[status] };
+    })
+    .filter(it => it.status !== 'no');
+  // Things to put on first, then things to pack; the sort is stable, so catalogue order holds within each group.
+  items.sort((x, y) => STRONGER[y.status] - STRONGER[x.status]);
   // Keep the most important ones if there are too many for the grid.
-  while (items.length > MAX_ITEMS) {
-    const idx = items.map((it, i) => [it, i]).reverse()
-      .find(([it]) => it.m !== 'on' && it.a !== 'on');
-    items.splice(idx ? idx[1] : items.length - 1, 1);
-  }
+  while (items.length > MAX_ITEMS) items.pop();
   return items;
 }
 
