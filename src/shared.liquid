@@ -9,14 +9,15 @@
   .kc h1, .kc h2, .kc h3, .kc p { font-family: inherit; }
   .kc-hd { display: flex; justify-content: space-between; align-items: flex-end; gap: 1em;
            border-bottom: 0.18em solid #000; padding-bottom: 0.45em; }
-  .kc-hd h1 { margin: 0; font-size: 2.2em; font-weight: 800; line-height: 1; }
+  .kc-hd h1 { margin: 0; font-size: 2em; font-weight: 800; line-height: 1; }
   .kc-hd .kc-date { text-align: right; font-size: 1.15em; font-weight: 800; line-height: 1.25; white-space: nowrap; }
   .kc-hd .kc-date span { display: block; font-weight: 600; color: #333; font-size: 0.8em; }
-  .kc-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 18.5em minmax(0, 1fr); gap: 1.1em; }
-  .kc-wx { display: flex; flex-direction: column; justify-content: space-between; gap: 0.7em; min-height: 0; }
+  .kc-main { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.7em; }
+  .kc-wx { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 1.1em; align-items: center; }
+  .kc-nowbox { display: flex; flex-direction: column; gap: 0.3em; }
   .kc-now { display: flex; align-items: center; gap: 0.5em; }
-  .kc-now svg { width: 6.2em; height: 6.2em; flex: none; }
-  .kc-now .kc-t { font-size: 4.6em; font-weight: 800; line-height: 0.9; }
+  .kc-now svg { width: 4.2em; height: 4.2em; flex: none; }
+  .kc-now .kc-t { font-size: 3.4em; font-weight: 800; line-height: 0.9; }
   .kc-now .kc-f { font-size: 1.1em; font-weight: 700; color: #000; margin-top: 0.3em; }
   .kc-say { margin: 0; font-size: 1.2em; font-weight: 700; line-height: 1.25; }
   .kc-parts { display: grid; gap: 0.4em; }
@@ -31,7 +32,7 @@
   .kc-hr { display: flex; flex-direction: column; align-items: center; gap: 0.2em; }
   .kc-hr .kc-h { font-size: 0.9em; font-weight: 800; color: #333; }
   .kc-hr .kc-c { font-size: 1.3em; font-weight: 800; }
-  .kc-box { width: 1.2em; height: 2.6em; border: 0.14em solid #000; border-radius: 0.3em; display: flex;
+  .kc-box { width: 1.2em; height: 1.5em; border: 0.14em solid #000; border-radius: 0.3em; display: flex;
             align-items: flex-end; overflow: hidden; }
   .kc-bar { width: 100%; background: #000; }
   .kc-hr .kc-mm { font-size: 0.8em; font-weight: 700; }
@@ -41,20 +42,20 @@
   .kc-sun i { display: inline-block; width: 1.1em; height: 0.55em; border: 0.15em solid #000; border-radius: 0.25em;
               vertical-align: middle; margin-right: 0.25em; }
   .kc-sun i.dark { background: #000; }
-  .kc-fit { display: flex; flex-direction: column; gap: 0.5em; min-height: 0; }
+  .kc-fit { flex: 1; display: flex; flex-direction: column; gap: 0.5em; min-height: 0; }
   .kc-fit-hd { display: flex; justify-content: space-between; align-items: center; gap: 0.6em; }
-  .kc-fit-hd h2 { margin: 0; font-size: 1.55em; font-weight: 800; }
+  .kc-fit-hd h2 { margin: 0; font-size: 1.4em; font-weight: 800; }
   .kc-key { display: flex; gap: 0.5em; font-size: 1em; }
   .kc-key .kc-pill { padding: 0.12em 0.6em; }
   .kc-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
              grid-auto-rows: minmax(0, 1fr); gap: 0.5em; }
   .kc-card { border: 0.14em solid #000; border-radius: 0.8em; padding: 0.4em 0.35em; display: flex; flex-direction: column;
              align-items: center; gap: 0.2em; min-height: 0; }
-  .kc-card svg { width: 100%; height: 5.6em; flex: none; }
-  .kc-card h3 { margin: 0; font-size: 1.2em; font-weight: 800; text-align: center; line-height: 1.05; }
+  .kc-card svg { width: 100%; flex: 1 1 0; min-height: 3em; }
+  .kc-card h3 { margin: 0; font-size: 1.25em; font-weight: 800; text-align: center; line-height: 1.05; }
   .kc-pill { display: block; font-size: 0.9em; font-weight: 800; border-radius: 99em; padding: 0.12em 0.15em; overflow: hidden;
              text-align: center; white-space: nowrap; border: 0.14em solid #000; color: #000; }
-  .kc-status { margin-top: auto; width: 100%; font-size: 1.15em; padding: 0.2em 0.3em; }
+  .kc-status { width: 100%; font-size: 1.25em; padding: 0.2em 0.3em; }
   .kc-pill.on { border-width: 0.2em; }
   .kc-pill.bag { background: #fff; border-style: dashed; }
   .kc-unit { font-size: 0.8em; font-weight: 700; color: #333; }
