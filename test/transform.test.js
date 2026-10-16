@@ -38,8 +38,29 @@ test('one variant per garment, so never two kinds of mittens', () => {
   assert.equal(new Set(icons).size, icons.length);
 });
 
-test('dry frost means winter suit and winter boots', () => {
+test('dry frost without snow on the ground means a shell suit with thick wool', () => {
   const o = outfit({ tMin: -8, tMax: -5, feels: -14, wind: 3, precip: 0, kind: 'clear', dark: true });
+  assert.equal(o.vinterdress, undefined);
+  assert.equal(o.parkdress, 'on');
+  assert.equal(o.ullgenser_tykk, 'on');
+  const mild = outfit({ tMin: -2, tMax: 0, feels: -3, wind: 2, precip: 0, kind: 'cloudy', dark: false });
+  assert.equal(mild.parkdress, 'on');
+  assert.equal(mild.fleece, 'on');
+});
+
+test('the snow setting is read from the plugin form', () => {
+  const cold = JSON.parse(JSON.stringify(fixture));
+  for (const e of cold.properties.timeseries) {
+    e.data.instant.details.air_temperature -= 8;
+    e.data.next_1_hours = { summary: { symbol_code: 'cloudy' }, details: { precipitation_amount: 0 } };
+  }
+  const at = new Date('2026-10-16T04:30:00Z');
+  assert.ok(build(cold, at).items.some(i => i.key === 'parkdress'));
+  assert.ok(build({ ...cold, snow_on_ground: 'ja' }, at).items.some(i => i.key === 'vinterdress'));
+});
+
+test('dry frost with snow on the ground means winter suit and winter boots', () => {
+  const o = outfit({ tMin: -8, tMax: -5, feels: -14, wind: 3, precip: 0, kind: 'clear', dark: true }, { snowOnGround: true });
   assert.equal(o.vinterdress, 'on');
   assert.equal(o.vinterstovler, 'on');
   assert.equal(o.ullgenser, 'on');

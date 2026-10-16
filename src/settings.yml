@@ -40,6 +40,14 @@ custom_fields:
   name: Lengdegrad
   description: Maks fire desimaler, for eksempel 18.9560.
   default: '18.9560'
+- keyname: snow_on_ground
+  field_type: select
+  name: Snø på bakken
+  description: Vinterdress anbefales bare når det ligger snø. Ellers blir det parkdress med fleece eller tykk ull under.
+  options:
+  - Nei
+  - Ja
+  default: nei
 - keyname: calendar_url
   field_type: url
   name: Kalender (iCal-lenke)

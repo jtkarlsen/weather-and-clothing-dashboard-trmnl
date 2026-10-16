@@ -171,11 +171,13 @@ function describe(s, when) {
 // Item catalogue in display priority order. `icon` matches a symbol id in shared.liquid.
 const CATALOGUE = [
   ['vinterdress', 'Vinterdress', 'vinterdress'],
+  ['parkdress', 'Parkdress', 'parkdress'],
   ['regnjakke_foret', 'Fôret regnjakke', 'regnjakke'],
   ['regnbukse_foret', 'Fôret regnbukse', 'regnbukse'],
   ['regnjakke', 'Regnjakke', 'regnjakke'],
   ['regnbukse', 'Regnbukse', 'regnbukse'],
   ['lett_jakke', 'Lett jakke', 'jakke'],
+  ['ullgenser_tykk', 'Tykk ullgenser', 'genser'],
   ['ullgenser', 'Ullgenser', 'genser'],
   ['fleece', 'Fleecejakke', 'fleece'],
   ['vinterstovler', 'Vinterstøvler', 'stovler'],
@@ -192,22 +194,27 @@ const CATALOGUE = [
   ['skiftetoy', 'Skiftetøy', 'sekk']
 ];
 
-function outfit(s) {
+// snowOnGround: winter suits are only for snow; on bare ground they get torn, so kids wear
+// a shell suit (parkdress) with fleece or thick wool under instead.
+function outfit(s, { snowOnGround = false } = {}) {
   const out = {};
   const f = s.feels;
   const wet = (['rain', 'sleet', 'thunder'].includes(s.kind) && s.precip >= 0.2) || s.precip >= 0.5;
   const rainy = ['rain', 'sleet', 'thunder'].includes(s.kind);
 
-  if (s.tMin <= -1 && !rainy) out.vinterdress = 'on';
+  const frost = s.tMin <= -1 && !rainy;
+  if (frost && snowOnGround) out.vinterdress = 'on';
+  else if (frost) out.parkdress = 'on';
   else if (f <= 6) { out.regnjakke_foret = 'on'; out.regnbukse_foret = 'on'; }
   else if (wet) { out.regnjakke = 'on'; out.regnbukse = 'on'; }
   else if (f <= 14) out.lett_jakke = 'on';
 
   if (f <= 0 && out.vinterdress) out.ullgenser = 'on';
+  else if (f <= -5 && out.parkdress) out.ullgenser_tykk = 'on';
   else if (f <= 10) out.fleece = 'on';
   else if (f <= 14) out.fleece = 'bag';
 
-  if (s.tMin <= -1 && !rainy) out.vinterstovler = 'on';
+  if (frost) out.vinterstovler = 'on';
   else if (f <= 6) out.forede_stovler = 'on';
   else if (wet) out.gummistovler = 'on';
   else out.joggesko = 'on';
@@ -479,7 +486,8 @@ function build(input, now) {
     };
   }).filter(Boolean);
 
-  const items = mergeOutfits(outfit(m), outfit(a));
+  const snowOnGround = /^(ja|yes|true|1)$/i.test(String(field(input, 'snow_on_ground', 'nei')).trim());
+  const items = mergeOutfits(outfit(m, { snowOnGround }), outfit(a, { snowOnGround }));
 
   const ics = findIcs(input);
   const calendar = ics ? eventsForDate(ics, targetDate, timeZone) : { events: [], more: 0 };

@@ -27,7 +27,7 @@ After 17:00 the screen switches to tomorrow's plan.
 
 | File | Purpose |
 |---|---|
-| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, time zone) |
+| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, calendar, snow on the ground, time zone) |
 | `src/transform.js` | Serverless transform. Turns the Yr forecast into a small outfit plan |
 | `src/shared.liquid` | Styles and the SVG icons, shared by every view |
 | `src/full.liquid` | Full screen |
@@ -42,8 +42,11 @@ have at most four decimals.
 
 The clothing rules live in `outfit()` in `src/transform.js`. They work from the coldest
 "feels like" temperature in each part of the day, the precipitation, and whether it is
-dark. For example: lined rain gear at 6° or colder, a winter suit in dry frost, mittens
-at 4° or colder, and a reflector vest whenever the sun is down.
+dark. For example: lined rain gear at 6° or colder, mittens at 4° or colder, and a
+reflector vest whenever the sun is down. In dry frost it suggests a winter suit only when
+the **Snø på bakken** setting is "Ja" (winter suits get torn on bare ground); otherwise it
+suggests a parka suit with fleece, or a thick wool sweater when it feels like −5° or colder.
+Yr's forecast does not say whether snow is lying, so this is a manual setting.
 
 ## Install on TRMNL
 
