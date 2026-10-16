@@ -10,7 +10,7 @@ const PERIODS = {
 };
 const STRIP_HOURS = [7, 9, 11, 13, 15, 17];
 const SWITCH_TO_TOMORROW_AT = 17; // after this local hour, show tomorrow
-const STATUS_LABEL = { on: 'Ha på', bag: 'I sekken', no: 'Trengs ikke' };
+const STATUS_LABEL = { on: 'Ha på', bag: 'I sekken', no: 'Nei' };
 const MAX_ITEMS = 10;
 
 // ---------- input helpers ----------
@@ -51,9 +51,14 @@ function clock(date, timeZone) {
   return `${String(p.hour).padStart(2, '0')}.${String(p.minute).padStart(2, '0')}`;
 }
 
+// Spelled out by hand: TRMNL's Node runtime may lack Norwegian locale data and fall back to English.
+const DAYS = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
+const MONTHS = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+
 function norwegianDate(date, timeZone) {
-  const s = new Intl.DateTimeFormat('nb-NO', { timeZone, weekday: 'long', day: 'numeric', month: 'long' }).format(date);
-  return s.charAt(0).toUpperCase() + s.slice(1);
+  const [y, m, d] = localParts(date, timeZone).date.split('-').map(Number);
+  const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  return `${DAYS[weekday]} ${d}. ${MONTHS[m - 1]}`;
 }
 
 // ---------- sun ----------
@@ -138,8 +143,7 @@ function summarize(hours) {
 }
 
 const fmtTemp = t => `${Math.round(t) < 0 ? '−' : ''}${Math.abs(Math.round(t))}°`;
-const fmtMm = mm => `${mm.toFixed(1).replace('.', ',')} mm`;
-const fmtWind = w => `${Math.round(w)} m/s`;
+const fmtWind = w => `${Math.round(w)}\u00a0m/s`;
 
 const KIND_TEXT = {
   clear: 'Sol', partly: 'Lettskyet', cloudy: 'Skyet', fog: 'Tåke',
@@ -312,7 +316,7 @@ function build(input, now) {
     return {
       hour: String(h).padStart(2, '0'),
       temp: fmtTemp(at.temp),
-      precip: fmtMm(mm),
+      precip: mm.toFixed(1).replace('.', ','),
       bar: Math.min(100, Math.round(mm / 2 * 100)),
       dark: at.dark
     };

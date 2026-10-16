@@ -1,80 +1,85 @@
 <style>
   /* Sizes are in em, and the root size follows the layout, so the same markup fits
-     TRMNL X (1040×780) and the original TRMNL (800×480) as well as mashup slots. */
-  .kc { width: 100%; height: 100%; font-size: min(calc(100cqw / 62), calc(100cqh / 44)); color: #000;
-        display: flex; flex-direction: column; gap: 0.8em; font-variant-numeric: tabular-nums; }
+     TRMNL X (1040×780) and the original TRMNL (800×480) as well as mashup slots.
+     Tuned on a real TRMNL X: no text below ~13px, no grays lighter than #555 for text. */
+  .kc { width: 100%; height: 100%; font-size: min(calc(100cqw / 58), calc(100cqh / 41)); color: #000;
+        font-family: "Inter Variable", "Inter", "Helvetica Neue", Arial, sans-serif;
+        display: flex; flex-direction: column; gap: 0.7em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .kc h1, .kc h2, .kc h3, .kc p { font-family: inherit; }
   .kc-hd { display: flex; justify-content: space-between; align-items: flex-end; gap: 1em;
-           border-bottom: 0.18em solid #000; padding-bottom: 0.5em; }
-  .kc-hd h1 { margin: 0; font-size: 2.3em; font-weight: 700; line-height: 1; }
-  .kc-hd .kc-date { text-align: right; font-size: 1.05em; font-weight: 700; line-height: 1.25; white-space: nowrap; }
-  .kc-hd .kc-date span { display: block; font-weight: 500; color: #555; font-size: 0.82em; }
-  .kc-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 19.5em minmax(0, 1fr); gap: 1.3em; }
-  .kc-wx { display: flex; flex-direction: column; gap: 0.8em; min-height: 0; }
-  .kc-now { display: flex; align-items: center; gap: 0.6em; }
-  .kc-now svg { width: 6.6em; height: 6.6em; flex: none; }
-  .kc-now .kc-t { font-size: 5em; font-weight: 700; line-height: 0.9; }
-  .kc-now .kc-f { font-size: 1em; font-weight: 700; color: #333; margin-top: 0.35em; }
-  .kc-say { margin: 0; font-size: 1.15em; font-weight: 700; line-height: 1.3; }
-  .kc-parts { display: grid; gap: 0.45em; }
-  .kc-part { display: grid; grid-template-columns: 7em 1fr; align-items: center; border: 0.12em solid #000;
-             border-radius: 0.8em; padding: 0.45em 0.7em; }
-  .kc-part b { font-size: 1.05em; }
-  .kc-part small { display: block; font-size: 0.72em; color: #555; font-weight: 700; }
-  .kc-part .kc-v { font-size: 0.9em; font-weight: 700; }
-  .kc-part .kc-v strong { font-size: 1.45em; margin-right: 0.3em; }
-  .kc-hours { margin-top: auto; }
-  .kc-hours h2 { margin: 0 0 0.35em; font-size: 1em; }
-  .kc-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.25em; text-align: center; }
+           border-bottom: 0.18em solid #000; padding-bottom: 0.45em; }
+  .kc-hd h1 { margin: 0; font-size: 2.2em; font-weight: 800; line-height: 1; }
+  .kc-hd .kc-date { text-align: right; font-size: 1.15em; font-weight: 800; line-height: 1.25; white-space: nowrap; }
+  .kc-hd .kc-date span { display: block; font-weight: 600; color: #333; font-size: 0.8em; }
+  .kc-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 18.5em minmax(0, 1fr); gap: 1.1em; }
+  .kc-wx { display: flex; flex-direction: column; justify-content: space-between; gap: 0.7em; min-height: 0; }
+  .kc-now { display: flex; align-items: center; gap: 0.5em; }
+  .kc-now svg { width: 6.2em; height: 6.2em; flex: none; }
+  .kc-now .kc-t { font-size: 4.6em; font-weight: 800; line-height: 0.9; }
+  .kc-now .kc-f { font-size: 1.1em; font-weight: 700; color: #000; margin-top: 0.3em; }
+  .kc-say { margin: 0; font-size: 1.2em; font-weight: 700; line-height: 1.25; }
+  .kc-parts { display: grid; gap: 0.4em; }
+  .kc-part { display: grid; grid-template-columns: 6.6em 1fr; align-items: center; border: 0.14em solid #000;
+             border-radius: 0.7em; padding: 0.4em 0.6em; }
+  .kc-part b { font-size: 1.05em; font-weight: 800; }
+  .kc-part small { display: block; font-size: 0.8em; color: #333; font-weight: 700; }
+  .kc-part .kc-v { font-size: 1em; font-weight: 700; line-height: 1.15; }
+  .kc-part .kc-v strong { font-size: 1.5em; margin-right: 0.25em; font-weight: 800; }
+  .kc-hours h2 { margin: 0 0 0.3em; font-size: 1.05em; font-weight: 800; }
+  .kc-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.2em; text-align: center; }
   .kc-hr { display: flex; flex-direction: column; align-items: center; gap: 0.2em; }
-  .kc-hr .kc-h { font-size: 0.78em; font-weight: 700; color: #555; }
-  .kc-hr .kc-c { font-size: 1.25em; font-weight: 700; }
-  .kc-box { width: 1.1em; height: 2.4em; border: 0.12em solid #000; border-radius: 0.3em; display: flex;
+  .kc-hr .kc-h { font-size: 0.9em; font-weight: 800; color: #333; }
+  .kc-hr .kc-c { font-size: 1.3em; font-weight: 800; }
+  .kc-box { width: 1.2em; height: 2.6em; border: 0.14em solid #000; border-radius: 0.3em; display: flex;
             align-items: flex-end; overflow: hidden; }
-  .kc-bar { width: 100%; background: #333; }
-  .kc-hr .kc-mm { font-size: 0.7em; font-weight: 700; }
-  .kc-lt { width: 100%; height: 0.5em; border: 0.12em solid #000; border-radius: 0.25em; }
+  .kc-bar { width: 100%; background: #000; }
+  .kc-hr .kc-mm { font-size: 0.8em; font-weight: 700; }
+  .kc-lt { width: 100%; height: 0.55em; border: 0.14em solid #000; border-radius: 0.25em; }
   .kc-lt.dark { background: #000; }
-  .kc-sun { margin-top: 0.4em; font-size: 0.78em; font-weight: 700; color: #333; display: flex; gap: 0.8em; flex-wrap: wrap; }
-  .kc-sun i { display: inline-block; width: 1.1em; height: 0.5em; border: 0.15em solid #000; border-radius: 0.25em;
+  .kc-sun { margin-top: 0.4em; font-size: 0.85em; font-weight: 700; color: #000; display: flex; gap: 0.7em; flex-wrap: wrap; }
+  .kc-sun i { display: inline-block; width: 1.1em; height: 0.55em; border: 0.15em solid #000; border-radius: 0.25em;
               vertical-align: middle; margin-right: 0.25em; }
   .kc-sun i.dark { background: #000; }
-  .kc-fit { display: flex; flex-direction: column; gap: 0.6em; min-height: 0; }
+  .kc-fit { display: flex; flex-direction: column; gap: 0.5em; min-height: 0; }
   .kc-fit-hd { display: flex; justify-content: space-between; align-items: center; gap: 0.6em; }
-  .kc-fit-hd h2 { margin: 0; font-size: 1.6em; }
-  .kc-key { display: flex; gap: 0.4em; }
+  .kc-fit-hd h2 { margin: 0; font-size: 1.55em; font-weight: 800; }
+  .kc-key { display: flex; gap: 0.35em; font-size: 0.95em; }
   .kc-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-             grid-auto-rows: minmax(0, 1fr); gap: 0.6em; }
-  .kc-card { border: 0.12em solid #000; border-radius: 0.9em; padding: 0.45em; display: flex; flex-direction: column;
-             align-items: center; gap: 0.25em; min-height: 0; }
-  .kc-card svg { width: 100%; height: 5.4em; flex: none; }
-  .kc-card h3 { margin: 0; font-size: 1.1em; text-align: center; line-height: 1.1; }
-  .kc-when { margin-top: auto; width: 100%; display: grid; gap: 0.3em; }
-  .kc-row { display: grid; gap: 0.1em; text-align: center; font-size: 0.7em; font-weight: 700; color: #555; }
-  .kc-pill { display: block; font-size: 0.82em; font-weight: 700; border-radius: 99em; padding: 0.1em 0.5em;
-             text-align: center; white-space: nowrap; border: 0.12em solid #000; color: #000; }
-  .kc-row .kc-pill { font-size: 1.2em; }
+             grid-auto-rows: minmax(0, 1fr); gap: 0.5em; }
+  .kc-card { border: 0.14em solid #000; border-radius: 0.8em; padding: 0.4em 0.35em; display: flex; flex-direction: column;
+             align-items: center; gap: 0.2em; min-height: 0; }
+  .kc-card svg { width: 100%; height: 4.6em; flex: none; }
+  .kc-card h3 { margin: 0; font-size: 1.1em; font-weight: 800; text-align: center; line-height: 1.05; }
+  .kc-when { margin-top: auto; width: 100%; display: grid; gap: 0.25em; }
+  .kc-row { display: grid; grid-template-columns: 1.3em 1fr; align-items: center; gap: 0.25em; font-weight: 800; }
+  .kc-row abbr { font-size: 0.85em; text-decoration: none; text-align: center; border: 0.12em solid #000;
+                 border-radius: 0.3em; line-height: 1.25; }
+  .kc-pill { display: block; font-size: 0.9em; font-weight: 800; border-radius: 99em; padding: 0.12em 0.25em; overflow: hidden;
+             text-align: center; white-space: nowrap; border: 0.14em solid #000; color: #000; }
   .kc-pill.on { background: #000; color: #fff; }
   .kc-pill.bag { background: #fff; border-style: dashed; }
-  .kc-pill.no { border-color: #bbb; color: #999; text-decoration: line-through; }
-  .kc-tip { display: flex; align-items: center; gap: 0.7em; background: #000; color: #fff; border-radius: 0.8em;
-            padding: 0.5em 1em; font-size: 1.1em; font-weight: 700; }
-  .kc-tip svg { width: 1.6em; height: 1.6em; flex: none; }
+  .kc-pill.no { border-color: #555; color: #555; text-decoration: line-through; }
+  .kc-unit { font-size: 0.8em; font-weight: 700; color: #333; }
+  .kc-legend { font-size: 0.8em; font-weight: 700; color: #333; }
+  .kc-tip { display: flex; align-items: center; gap: 0.6em; background: #000; color: #fff; border-radius: 0.7em;
+            padding: 0.45em 0.9em; font-size: 1.2em; font-weight: 800; }
+  .kc-tip svg { width: 1.5em; height: 1.5em; flex: none; }
   .kc-err { margin: auto; text-align: center; font-size: 1.4em; font-weight: 700; max-width: 30em; }
   /* compact views */
   .kc-compact { gap: 0.6em; }
   .kc-compact .kc-list { display: flex; flex-wrap: wrap; gap: 0.4em; align-content: flex-start; }
-  .kc-chip { display: inline-flex; align-items: center; gap: 0.3em; border: 0.12em solid #000; border-radius: 99em;
-             padding: 0.15em 0.6em 0.15em 0.2em; font-weight: 700; font-size: 1.05em; }
+  .kc-chip { display: inline-flex; align-items: center; gap: 0.3em; border: 0.14em solid #000; border-radius: 99em;
+             padding: 0.15em 0.6em 0.15em 0.2em; font-weight: 800; font-size: 1.05em; }
   .kc-chip svg { width: 1.8em; height: 1.6em; }
   .kc-chip.bag { border-style: dashed; }
-  .kc-hh { flex-direction: row; font-size: min(calc(100cqw / 52), calc(100cqh / 20)); }
+  .kc-hh { flex-direction: row; font-size: min(calc(100cqw / 50), calc(100cqh / 19)); }
   .kc-hh-l { flex: none; width: 17em; display: flex; flex-direction: column; gap: 0.5em; }
   .kc-hh-r { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.5em; }
-  .kc-hv { font-size: min(calc(100cqw / 26), calc(100cqh / 40)); }
-  .kc-q { font-size: min(calc(100cqw / 26), calc(100cqh / 20)); }
+  .kc-hv { font-size: min(calc(100cqw / 25), calc(100cqh / 38)); }
+  .kc-q { font-size: min(calc(100cqw / 25), calc(100cqh / 19)); }
   .kc-q .kc-now svg { width: 4em; height: 4em; }
   .kc-q .kc-t { font-size: 3.2em; }
-  .kc-sub { margin: 0; font-size: 1.25em; }
+  .kc-sub { margin: 0; font-size: 1.25em; font-weight: 800; }
   .kc-end { margin-top: auto; }
 </style>
 

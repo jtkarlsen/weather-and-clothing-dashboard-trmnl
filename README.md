@@ -13,7 +13,7 @@ scales down to the original TRMNL and to mashup slots.
   ("føles som").
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
 - An outfit grid where each garment says **Ha på** (wear it), **I sekken** (pack it) or
-  **Trengs ikke** (not needed) for the morning and the afternoon.
+  **Nei** (not needed), marked M for morning and E for afternoon for the morning and the afternoon.
 - A reminder at the bottom, such as the reflector vest when it is dark on the way to school.
 
 After 17:00 the screen switches to tomorrow's plan.
