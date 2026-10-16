@@ -36,18 +36,12 @@
   .kc-part small { display: block; font-size: 0.8em; color: #333; font-weight: 700; }
   .kc-part .kc-v { font-size: 1em; font-weight: 700; line-height: 1.15; }
   .kc-part .kc-v strong { font-size: 1.5em; margin-right: 0.25em; font-weight: 800; }
-  .kc-wx:has(.kc-cal) { grid-template-columns: minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.4fr); }
-  .kc-cal { border: 0.14em solid #000; border-radius: 0.8em; padding: 0.45em 0.7em; display: flex; flex-direction: column; gap: 0.3em; min-width: 0; }
-  .kc-cal h2 { margin: 0; font-size: 1.3em; font-weight: 800; }
-  .kc-cal ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.3em; }
-  .kc-cal li { display: grid; grid-template-columns: 6.3em minmax(0, 1fr); align-items: baseline; gap: 0.5em;
-               border-top: 0.1em solid #000; padding-top: 0.3em; }
-  .kc-cal li:first-child { border-top: 0; padding-top: 0; }
-  .kc-cal li b { font-size: 1em; font-weight: 800; white-space: nowrap; }
-  .kc-cal li span { font-size: 1.1em; font-weight: 700; line-height: 1.15; display: -webkit-box; -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
-  .kc-cal small { font-size: 0.9em; font-weight: 700; }
-  .kc-cal-none { margin: 0; font-size: 1.1em; font-weight: 700; }
+  .kc-calbar { display: flex; align-items: stretch; gap: 0.5em; border: 0.2em solid #000; border-radius: 0.7em; padding: 0.35em 0.7em; }
+  .kc-calbar-hd { align-self: center; font-size: 1.2em; font-weight: 800; white-space: nowrap; }
+  .kc-ev { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; border-left: 0.12em solid #000; padding-left: 0.55em; }
+  .kc-ev small { font-size: 0.85em; font-weight: 800; }
+  .kc-ev span { font-size: 1.1em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kc-more { align-self: center; font-size: 1em; font-weight: 800; white-space: nowrap; }
   .kc-hours h2 { margin: 0 0 0.3em; font-size: 1.05em; font-weight: 800; }
   .kc-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.2em; text-align: center; }
   .kc-hr { display: flex; flex-direction: column; align-items: center; gap: 0.2em; }

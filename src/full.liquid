@@ -18,21 +18,6 @@
           <p class="kc-pc-say">{{ p.say }}</p>
         </div>
         {% endfor %}
-        {% if has_calendar %}
-        <div class="kc-cal">
-          <h2>{{ day_label }} skjer det</h2>
-          {% if events.size == 0 %}
-          <p class="kc-cal-none">Ingen avtaler</p>
-          {% else %}
-          <ul>
-            {% for e in events %}
-            <li><b>{{ e.time }}</b><span>{{ e.title }}</span></li>
-            {% endfor %}
-          </ul>
-          {% if more_events > 0 %}<small>+ {{ more_events }} til</small>{% endif %}
-          {% endif %}
-        </div>
-        {% else %}
         <div class="kc-hours">
           <h2>Time for time <span class="kc-unit">nedbør i mm</span></h2>
           <div class="kc-strip">
@@ -48,7 +33,6 @@
           </div>
           <div class="kc-sun"><span><i class="dark"></i>Mørkt</span><span><i></i>Lyst</span><span>{{ sun }}</span></div>
         </div>
-        {% endif %}
       </section>
 
       <section class="kc-fit">
@@ -68,7 +52,17 @@
       </section>
     </div>
 
+    {% if has_calendar and events.size > 0 %}
+    <div class="kc-calbar">
+      <b class="kc-calbar-hd">{{ day_label }}</b>
+      {% for e in events %}
+      <div class="kc-ev"><small>{{ e.time }}</small><span>{{ e.title }}</span></div>
+      {% endfor %}
+      {% if more_events > 0 %}<small class="kc-more">+ {{ more_events }}</small>{% endif %}
+    </div>
+    {% else %}
     <div class="kc-tip"><svg><use href="#kc-varsel"/></svg>{{ tip }}</div>
+    {% endif %}
   </div>
   {% else %}
   <div class="kc"><p class="kc-err">{{ error | default: "Fant ingen værdata fra yr.no." }}</p></div>
