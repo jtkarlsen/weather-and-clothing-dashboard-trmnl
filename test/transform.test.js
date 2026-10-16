@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { build, outfit, feelsLike } = require('../src/transform.js');
+const { build, outfit, feelsLike, utm33, fetchSnowDepth } = require('../src/transform.js');
 const fixture = require('./fixtures/tromso-2026-10-16.json');
 
 test('morning in Tromsø in October gives a Norwegian outfit plan', () => {
@@ -48,15 +48,33 @@ test('dry frost without snow on the ground means a shell suit with thick wool', 
   assert.equal(mild.fleece, 'on');
 });
 
-test('the snow setting is read from the plugin form', () => {
+test('snow depth from NVE decides between winter suit and shell suit', () => {
   const cold = JSON.parse(JSON.stringify(fixture));
   for (const e of cold.properties.timeseries) {
     e.data.instant.details.air_temperature -= 8;
     e.data.next_1_hours = { summary: { symbol_code: 'cloudy' }, details: { precipitation_amount: 0 } };
   }
   const at = new Date('2026-10-16T04:30:00Z');
-  assert.ok(build(cold, at).items.some(i => i.key === 'parkdress'));
-  assert.ok(build({ ...cold, snow_on_ground: 'ja' }, at).items.some(i => i.key === 'vinterdress'));
+  const has = (input, key) => build(input, at).items.some(i => i.key === key);
+  assert.ok(has(cold, 'parkdress'), 'no data means bare ground');
+  assert.ok(has({ ...cold, snow_depth: { '2026-10-16': 2 } }, 'parkdress'), 'a dusting is not enough');
+  assert.ok(has({ ...cold, snow_depth: { '2026-10-15': 20 } }, 'vinterdress'), 'latest earlier day is used');
+});
+
+test('coordinates are converted to UTM zone 33 for NVE', () => {
+  const oslo = utm33(59.9139, 10.7522);
+  assert.ok(Math.abs(oslo.x - 262000) < 1500 && Math.abs(oslo.y - 6649500) < 1500, JSON.stringify(oslo));
+});
+
+test('snow depth is fetched from NVE and survives failures', async () => {
+  let url;
+  const ok = async u => { url = u; return { ok: true, json: async () => ({ NoDataValue: 65535, Data: [0, 3, 65535, 12] }) }; };
+  const now = new Date('2026-10-16T10:00:00Z');
+  const d = await fetchSnowDepth(69.6496, 18.956, now, 'Europe/Oslo', ok);
+  assert.match(url, /^https:\/\/gts\.nve\.no\/api\/GridTimeSeries\/\d+\/\d+\/2026-10-13\/2026-10-16\/sd\.json$/);
+  assert.deepEqual(d, { '2026-10-13': 0, '2026-10-14': 3, '2026-10-16': 12 });
+  assert.equal(await fetchSnowDepth(69.6, 18.9, now, 'Europe/Oslo', async () => { throw new Error('offline'); }), null);
+  assert.equal(await fetchSnowDepth(69.6, 18.9, now, 'Europe/Oslo', async () => ({ ok: false })), null);
 });
 
 test('dry frost with snow on the ground means winter suit and winter boots', () => {

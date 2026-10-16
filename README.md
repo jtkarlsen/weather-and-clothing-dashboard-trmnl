@@ -27,7 +27,7 @@ After 17:00 the screen switches to tomorrow's plan.
 
 | File | Purpose |
 |---|---|
-| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, calendar, snow on the ground, time zone) |
+| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, calendar, time zone) |
 | `src/transform.js` | Serverless transform. Turns the Yr forecast into a small outfit plan |
 | `src/shared.liquid` | Styles and the SVG icons, shared by every view |
 | `src/full.liquid` | Full screen |
@@ -44,9 +44,14 @@ The clothing rules live in `outfit()` in `src/transform.js`. They work from the 
 "feels like" temperature in each part of the day, the precipitation, and whether it is
 dark. For example: lined rain gear at 6° or colder, mittens at 4° or colder, and a
 reflector vest whenever the sun is down. In dry frost it suggests a winter suit only when
-the **Snø på bakken** setting is "Ja" (winter suits get torn on bare ground); otherwise it
-suggests a parka suit with fleece, or a thick wool sweater when it feels like −5° or colder.
-Yr's forecast does not say whether snow is lying, so this is a manual setting.
+there is at least 5 cm of snow on the ground (winter suits get torn on bare ground);
+otherwise it suggests a parka suit with fleece, or a thick wool sweater when it feels like
+−5° or colder.
+
+Yr's forecast does not say whether snow is lying, so the transform also asks NVE's
+[seNorge](https://www.senorge.no) model for the snow depth at your coordinates, through the
+open [GridTimeSeries API](https://api.nve.no/doc/gridtimeseries-data-gts/) (Norway only,
+NLOD licence). If NVE can't be reached, it assumes bare ground.
 
 ## Install on TRMNL
 
@@ -72,5 +77,6 @@ npm test
 ## Attribution
 
 Weather data from MET Norway (yr.no), licensed under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The plugin shows
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Snow depth from NVE seNorge,
+licensed under [NLOD](https://data.norge.no/nlod/no/2.0). The plugin shows
 "Værdata fra Yr / MET Norway" in its title bar.

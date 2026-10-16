@@ -486,7 +486,9 @@ function build(input, now) {
     };
   }).filter(Boolean);
 
-  const snowOnGround = /^(ja|yes|true|1)$/i.test(String(field(input, 'snow_on_ground', 'nei')).trim());
+  // If NVE can't be reached we assume bare ground: a shell suit is the safer guess for the clothes.
+  const snowCm = snowDepthOn(input && input.snow_depth, targetDate);
+  const snowOnGround = snowCm !== null && snowCm >= SNOW_DEPTH_CM;
   const items = mergeOutfits(outfit(m, { snowOnGround }), outfit(a, { snowOnGround }));
 
   const ics = findIcs(input);
@@ -536,8 +538,78 @@ function build(input, now) {
   };
 }
 
-function run(input) {
-  return build(input, new Date());
+// ---------- snow depth (NVE seNorge) ----------
+// Yr's forecast says nothing about snow lying on the ground, so we ask NVE's seNorge
+// model (daily snow depth on a 1×1 km grid, open data under NLOD, Norway only).
+// The API wants UTM zone 33N coordinates.
+
+const SNOW_DEPTH_CM = 5; // at least this much snow before a winter suit makes sense
+
+function utm33(lat, lon) {
+  const a = 6378137, f = 1 / 298.257222101, k0 = 0.9996, lon0 = 15 * Math.PI / 180;
+  const e2 = f * (2 - f), ep2 = e2 / (1 - e2);
+  const phi = lat * Math.PI / 180, lam = lon * Math.PI / 180;
+  const N = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2);
+  const T = Math.tan(phi) ** 2, C = ep2 * Math.cos(phi) ** 2, A = Math.cos(phi) * (lam - lon0);
+  const M = a * ((1 - e2 / 4 - 3 * e2 ** 2 / 64 - 5 * e2 ** 3 / 256) * phi
+    - (3 * e2 / 8 + 3 * e2 ** 2 / 32 + 45 * e2 ** 3 / 1024) * Math.sin(2 * phi)
+    + (15 * e2 ** 2 / 256 + 45 * e2 ** 3 / 1024) * Math.sin(4 * phi)
+    - (35 * e2 ** 3 / 3072) * Math.sin(6 * phi));
+  const x = k0 * N * (A + (1 - T + C) * A ** 3 / 6 + (5 - 18 * T + T * T + 72 * C - 58 * ep2) * A ** 5 / 120) + 500000;
+  const y = k0 * (M + N * Math.tan(phi) * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A ** 4 / 24
+    + (61 - 58 * T + T * T + 600 * C - 330 * ep2) * A ** 6 / 720));
+  return { x: Math.round(x), y: Math.round(y) };
 }
 
-if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate };
+// Returns { 'YYYY-MM-DD': cm } for the last few days, or null if NVE can't be reached.
+async function fetchSnowDepth(lat, lon, now, timeZone, fetchFn = globalThis.fetch) {
+  if (!fetchFn || !isFinite(lat) || !isFinite(lon)) return null;
+  const { x, y } = utm33(lat, lon);
+  const to = localParts(now, timeZone).date;
+  const from = localParts(new Date(now.getTime() - 3 * 86400000), timeZone).date;
+  const url = `https://gts.nve.no/api/GridTimeSeries/${x}/${y}/${from}/${to}/sd.json`;
+  try {
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = ctrl && setTimeout(() => ctrl.abort(), 2500);
+    const res = await fetchFn(url, ctrl ? { signal: ctrl.signal } : undefined);
+    if (timer) clearTimeout(timer);
+    if (!res.ok) return null;
+    return parseSnowDepth(await res.json(), from);
+  } catch (e) {
+    return null;
+  }
+}
+
+function parseSnowDepth(json, from) {
+  if (!json || !Array.isArray(json.Data)) return null;
+  const out = {};
+  const start = new Date(from + 'T12:00:00Z');
+  json.Data.forEach((v, i) => {
+    if (typeof v !== 'number' || v === json.NoDataValue || v < 0 || v > 10000) return;
+    out[new Date(start.getTime() + i * 86400000).toISOString().slice(0, 10)] = v;
+  });
+  return Object.keys(out).length ? out : null;
+}
+
+// Latest known depth on or before the given date.
+function snowDepthOn(depths, date) {
+  if (!depths) return null;
+  const days = Object.keys(depths).filter(d => d <= date).sort();
+  const day = days.length ? days[days.length - 1] : Object.keys(depths).sort()[0];
+  return day ? depths[day] : null;
+}
+
+async function run(input) {
+  const now = new Date();
+  const forecast = findForecast(input);
+  const coords = (forecast && forecast.geometry && forecast.geometry.coordinates) || [];
+  const lat = Number(field(input, 'lat', coords[1]));
+  const lon = Number(field(input, 'lon', coords[0]));
+  const timeZone = field(input, 'time_zone', null)
+    || (input && input.trmnl && input.trmnl.user && input.trmnl.user.time_zone_iana)
+    || 'Europe/Oslo';
+  const snow_depth = await fetchSnowDepth(lat, lon, now, timeZone);
+  return build({ ...input, snow_depth }, now);
+}
+
+if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate, utm33, fetchSnowDepth };
