@@ -269,6 +269,151 @@ function mergeOutfits(morning, afternoon) {
   return items;
 }
 
+// ---------- calendar (iCal) ----------
+
+const MAX_EVENTS = 3;
+const ICS_DAYS = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
+
+// The calendar arrives as a second polled URL. Depending on how TRMNL wraps a
+// non-JSON response it may be a plain string or sit under a key, so look for it.
+function findIcs(input, depth = 0) {
+  if (typeof input === 'string') return input.includes('BEGIN:VCALENDAR') ? input : null;
+  if (!input || typeof input !== 'object' || depth > 3) return null;
+  for (const key of Object.keys(input)) {
+    if (key === 'trmnl' || key === 'properties') continue;
+    const found = findIcs(input[key], depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function parseIcs(text) {
+  const lines = text.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '').split('\n');
+  const events = [];
+  let ev = null;
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') { ev = { exdates: [] }; continue; }
+    if (line === 'END:VEVENT') { if (ev && ev.start) events.push(ev); ev = null; continue; }
+    if (!ev) continue;
+    const colon = line.indexOf(':');
+    if (colon < 0) continue;
+    const [name, ...params] = line.slice(0, colon).split(';');
+    const value = line.slice(colon + 1);
+    const tzid = (params.find(p => p.startsWith('TZID=')) || '').slice(5) || null;
+    if (name === 'SUMMARY') ev.title = value.replace(/\\([,;\\])/g, '$1').replace(/\\n/gi, ' ').trim();
+    else if (name === 'DTSTART') ev.start = icsTime(value, tzid);
+    else if (name === 'DTEND') ev.end = icsTime(value, tzid);
+    else if (name === 'RRULE') ev.rrule = Object.fromEntries(value.split(';').map(kv => kv.split('=')));
+    else if (name === 'EXDATE') value.split(',').forEach(v => ev.exdates.push(icsTime(v, tzid)));
+    else if (name === 'STATUS') ev.status = value;
+    else if (name === 'RECURRENCE-ID') ev.recurrenceId = icsTime(value, tzid);
+    else if (name === 'UID') ev.uid = value;
+  }
+  return events.filter(e => e.status !== 'CANCELLED');
+}
+
+// A time from iCal: all-day (DATE), UTC (…Z) or wall-clock time in a zone.
+function icsTime(value, tzid) {
+  const m = /^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/.exec(value.trim());
+  if (!m) return null;
+  const [, y, mo, d, h, mi, , z] = m;
+  if (h === undefined) return { allDay: true, date: `${y}-${mo}-${d}` };
+  return { allDay: false, utc: !!z, tzid, y: +y, mo: +mo, d: +d, h: +h, mi: +mi };
+}
+
+// Local date and minutes-after-midnight in the display time zone.
+function toLocal(t, timeZone) {
+  if (t.allDay) return { date: t.date, min: 0 };
+  if (t.utc || (t.tzid && t.tzid !== timeZone)) {
+    let utcMs = Date.UTC(t.y, t.mo - 1, t.d, t.h, t.mi);
+    if (!t.utc) {
+      // Wall time in another zone: correct by that zone's offset at that moment.
+      const p = localParts(new Date(utcMs), t.tzid);
+      const [py, pm, pd] = p.date.split('-').map(Number);
+      utcMs -= Date.UTC(py, pm - 1, pd, p.hour, p.minute) - utcMs;
+    }
+    const p = localParts(new Date(utcMs), timeZone);
+    return { date: p.date, min: p.hour * 60 + p.minute };
+  }
+  const pad = n => String(n).padStart(2, '0');
+  return { date: `${t.y}-${pad(t.mo)}-${pad(t.d)}`, min: t.h * 60 + t.mi };
+}
+
+const dayNumber = date => Math.round(Date.parse(`${date}T00:00:00Z`) / 86400000);
+
+// Does a recurring event (DAILY / WEEKLY / MONTHLY / YEARLY) have an occurrence starting on `date`?
+function occursOn(ev, startDate, date) {
+  const r = ev.rrule;
+  const diff = dayNumber(date) - dayNumber(startDate);
+  if (diff < 0) return false;
+  if (r.UNTIL) {
+    const until = toLocal(icsTime(r.UNTIL, null), 'UTC').date;
+    if (date > until) return false;
+  }
+  const interval = Number(r.INTERVAL || 1);
+  const weekday = new Date(`${date}T00:00:00Z`).getUTCDay();
+  let ok;
+  switch (r.FREQ) {
+    case 'DAILY': ok = diff % interval === 0; break;
+    case 'WEEKLY': {
+      const days = r.BYDAY ? r.BYDAY.split(',').map(d => ICS_DAYS[d.slice(-2)]) : [new Date(`${startDate}T00:00:00Z`).getUTCDay()];
+      const startMonday = dayNumber(startDate) - ((new Date(`${startDate}T00:00:00Z`).getUTCDay() + 6) % 7);
+      const week = Math.floor((dayNumber(date) - startMonday) / 7);
+      ok = days.includes(weekday) && week % interval === 0;
+      break;
+    }
+    case 'MONTHLY': ok = date.slice(8) === startDate.slice(8); break;
+    case 'YEARLY': ok = date.slice(5) === startDate.slice(5); break;
+    default: ok = false;
+  }
+  if (!ok) return false;
+  if (r.COUNT) {
+    // Count occurrences up to and including this date (cheap for the rules handled here).
+    let n = 0;
+    for (let i = 0; i <= diff; i++) {
+      const d = new Date((dayNumber(startDate) + i) * 86400000).toISOString().slice(0, 10);
+      if (occursOn({ rrule: { ...r, COUNT: undefined } }, startDate, d)) n++;
+    }
+    if (n > Number(r.COUNT)) return false;
+  }
+  return true;
+}
+
+function eventsForDate(icsText, date, timeZone) {
+  const all = parseIcs(icsText);
+  // Moved or edited single occurrences of a recurring event replace the original one.
+  const overridden = new Set(all.filter(e => e.recurrenceId)
+    .map(e => `${e.uid}|${toLocal(e.recurrenceId, timeZone).date}`));
+  const out = [];
+  for (const ev of all) {
+    const s = toLocal(ev.start, timeZone);
+    const e = ev.end ? toLocal(ev.end, timeZone) : s;
+    const lengthDays = dayNumber(e.date) - dayNumber(s.date);
+    let startsToday;
+    if (ev.rrule && !ev.recurrenceId) {
+      if (overridden.has(`${ev.uid}|${date}`)) continue;
+      if (ev.exdates.some(x => x && toLocal(x, timeZone).date === date)) continue;
+      startsToday = occursOn(ev, s.date, date);
+    } else {
+      startsToday = s.date === date;
+    }
+    const spansToday = !ev.rrule && s.date < date && (e.date > date || (e.date === date && !ev.start.allDay && e.min > 0));
+    if (!startsToday && !spansToday) continue;
+    const allDay = ev.start.allDay || spansToday || (lengthDays >= 1 && !ev.rrule);
+    const clockOf = min => `${String(Math.floor(min / 60)).padStart(2, '0')}.${String(min % 60).padStart(2, '0')}`;
+    out.push({
+      title: ev.title || 'Uten tittel',
+      sort: allDay ? -1 : s.min,
+      time: allDay ? 'Hele dagen' : (ev.end && e.min !== s.min ? `${clockOf(s.min)}–${clockOf(e.min)}` : clockOf(s.min))
+    });
+  }
+  out.sort((x, y) => x.sort - y.sort);
+  return {
+    events: out.slice(0, MAX_EVENTS).map(({ title, time }) => ({ title, time })),
+    more: Math.max(0, out.length - MAX_EVENTS)
+  };
+}
+
 // ---------- main ----------
 
 function build(input, now) {
@@ -336,6 +481,9 @@ function build(input, now) {
 
   const items = mergeOutfits(outfit(m), outfit(a));
 
+  const ics = findIcs(input);
+  const calendar = ics ? eventsForDate(ics, targetDate, timeZone) : { events: [], more: 0 };
+
   let tip;
   const darkMorning = mHours.filter(h => h.dark);
   if (darkMorning.length && sun.rise) tip = `Husk refleksvesten! Det er mørkt ute til kl. ${clock(sun.rise, timeZone)}.`;
@@ -373,6 +521,9 @@ function build(input, now) {
     strip,
     sun: sun.text,
     items,
+    has_calendar: !!ics,
+    events: calendar.events,
+    more_events: calendar.more,
     tip
   };
 }
@@ -381,4 +532,4 @@ function run(input) {
   return build(input, new Date());
 }
 
-if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit };
+if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate };

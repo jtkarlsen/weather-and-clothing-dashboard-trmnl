@@ -63,3 +63,35 @@ test('missing forecast gives a readable error', () => {
   assert.equal(r.ok, false);
   assert.match(r.error, /yr\.no/);
 });
+
+const fs = require('node:fs');
+const path = require('node:path');
+const ics = fs.readFileSync(path.join(__dirname, 'fixtures/family.ics'), 'utf8');
+
+test('calendar: today\'s events in time order, at most three', () => {
+  const r = eventsForDateExport(ics, '2026-10-16');
+  assert.deepEqual(r.events, [
+    { title: 'Bursdag til Ola', time: 'Hele dagen' },
+    { title: 'Skole', time: '08.30–14.00' },
+    { title: 'Tannlege', time: '12.15–12.45' }
+  ]);
+  assert.equal(r.more, 1, 'football is the fourth event');
+});
+
+test('calendar: weekly rules, exceptions and other days', () => {
+  assert.deepEqual(eventsForDateExport(ics, '2026-10-15').events, [], 'school cancelled by EXDATE');
+  assert.deepEqual(eventsForDateExport(ics, '2026-10-17').events, [{ title: 'Svømming', time: '11.00–12.00' }]);
+  assert.deepEqual(eventsForDateExport(ics, '2026-10-19').events.map(e => e.title), ['Skole']);
+});
+
+test('calendar: found in the polled data and passed to the screen', () => {
+  const r = build({ IDX_0: fixture, IDX_1: ics }, new Date('2026-10-16T04:30:00Z'));
+  assert.equal(r.has_calendar, true);
+  assert.equal(r.events.length, 3);
+  const plain = build(fixture, new Date('2026-10-16T04:30:00Z'));
+  assert.equal(plain.has_calendar, false);
+});
+
+function eventsForDateExport(text, date) {
+  return require('../src/transform.js').eventsForDate(text, date, 'Europe/Oslo');
+}

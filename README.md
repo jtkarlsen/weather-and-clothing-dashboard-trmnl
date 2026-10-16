@@ -14,6 +14,10 @@ scales down to the original TRMNL and to mashup slots.
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
 - An outfit grid with one label per garment: **Ha på** (wear it on the way to school) or
   **I sekken** (pack it, because it is only needed later in the day or is optional).
+- Optionally, up to three calendar events for the day with start and end times, in place
+  of the hour strip. Paste an iCal link (for Google Calendar: Settings → the calendar →
+  "Secret address in iCal format") into the plugin's calendar field. Recurring weekly
+  events, cancelled dates and all-day events are handled.
 - A reminder at the bottom, such as the reflector vest when it is dark on the way to school.
 
 After 17:00 the screen switches to tomorrow's plan.
