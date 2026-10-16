@@ -36,18 +36,23 @@
       </section>
 
       <section class="kc-fit">
-        <div class="kc-fit-hd">
-          <h2>Dette skal du ha på deg</h2>
-          <div class="kc-key"><span class="kc-pill on">Ha på</span><span class="kc-pill bag">I sekken</span></div>
+        <div class="kc-split-hd">
+          <h2 class="kc-sub">Ha på deg</h2>
+          <h2 class="kc-sub kc-bag-hd"><svg><use href="#kc-sekk"/></svg>I sekken</h2>
         </div>
-        <div class="kc-grid">
-          {% for it in items %}
-          <div class="kc-card">
-            <svg><use href="#kc-{{ it.icon }}"/></svg>
-            <h3>{{ it.name }}</h3>
-            <span class="kc-pill kc-status {{ it.status }}">{{ it.label }}</span>
+        {% assign on_items = items | where: "status", "on" %}
+        {% assign cols = on_items.size | plus: 1 | divided_by: 2 %}
+        <div class="kc-split">
+          <div class="kc-flex kc-cols-{{ cols }}">
+            {% for it in on_items %}
+            <div class="kc-card"><svg><use href="#kc-{{ it.icon }}"/></svg><h3>{{ it.name }}</h3></div>
+            {% endfor %}
           </div>
-          {% endfor %}
+          <div class="kc-bagbox">
+            {% for it in items %}{% if it.status == "bag" %}
+            <div class="kc-bagitem"><svg><use href="#kc-{{ it.icon }}"/></svg><span>{{ it.name }}</span></div>
+            {% endif %}{% endfor %}
+          </div>
         </div>
       </section>
     </div>

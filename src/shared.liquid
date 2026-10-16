@@ -58,21 +58,10 @@
               vertical-align: middle; margin-right: 0.25em; }
   .kc-sun i.dark { background: #000; }
   .kc-fit { flex: 1; display: flex; flex-direction: column; gap: 0.5em; min-height: 0; }
-  .kc-fit-hd { display: flex; justify-content: space-between; align-items: center; gap: 0.6em; }
-  .kc-fit-hd h2 { margin: 0; font-size: 1.4em; font-weight: 800; }
-  .kc-key { display: flex; gap: 0.5em; font-size: 1em; }
-  .kc-key .kc-pill { padding: 0.12em 0.6em; }
-  .kc-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-             grid-auto-rows: minmax(0, 1fr); gap: 0.5em; }
   .kc-card { border: 0.14em solid #000; border-radius: 0.8em; padding: 0.4em 0.35em; display: flex; flex-direction: column;
              align-items: center; gap: 0.2em; min-height: 0; }
   .kc-card svg { width: 100%; flex: 1 1 0; min-height: 3em; }
   .kc-card h3 { margin: 0; font-size: 1.25em; font-weight: 800; text-align: center; line-height: 1.05; }
-  .kc-pill { display: block; font-size: 0.9em; font-weight: 800; border-radius: 99em; padding: 0.12em 0.15em; overflow: hidden;
-             text-align: center; white-space: nowrap; border: 0.14em solid #000; color: #000; }
-  .kc-status { width: 100%; font-size: 1.25em; padding: 0.2em 0.3em; }
-  .kc-pill.on { border-width: 0.2em; }
-  .kc-pill.bag { background: #fff; border-style: dashed; }
   .kc-unit { font-size: 0.8em; font-weight: 700; color: #333; }
   .kc-tip { display: flex; align-items: center; gap: 0.6em; background: #fff; color: #000; border: 0.2em solid #000; border-radius: 0.7em;
             padding: 0.45em 0.9em; font-size: 1.2em; font-weight: 800; }
@@ -94,6 +83,21 @@
   .kc-q .kc-t { font-size: 3.2em; }
   .kc-sub { margin: 0; font-size: 1.25em; font-weight: 800; }
   .kc-end { margin-top: auto; }
+
+  .kc-split-hd { display: grid; grid-template-columns: minmax(0, 1fr) 14em; gap: 0.8em; align-items: center; }
+  .kc-split-hd h2 { line-height: 1.6em; }
+  .kc-bag-hd { display: flex; align-items: center; gap: 0.3em; }
+  .kc-bag-hd svg { width: 1.8em; height: 1.4em; }
+  .kc-split { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 14em; gap: 0.8em; }
+  .kc-flex { display: flex; flex-wrap: wrap; gap: 0.5em; align-content: stretch; min-height: 0; }
+  .kc-flex .kc-card { flex: 1 1 calc(100% / var(--cols) - 0.5em); height: calc(50% - 0.25em); }
+  .kc-cols-1 { --cols: 1; } .kc-cols-2 { --cols: 2; } .kc-cols-3 { --cols: 3; }
+  .kc-cols-4 { --cols: 4; } .kc-cols-5 { --cols: 5; } .kc-cols-6 { --cols: 6; }
+  .kc-flex .kc-card h3 { font-size: 1.25em; padding-bottom: 0.2em; }
+  .kc-bagbox { border: 0.2em dashed #000; border-radius: 0.9em; padding: 0.6em 0.7em;
+               display: flex; flex-direction: column; justify-content: space-evenly; gap: 0.5em; min-height: 0; }
+  .kc-bagitem { display: flex; align-items: center; gap: 0.5em; font-size: 1.15em; font-weight: 800; }
+  .kc-bagitem svg { width: 3.4em; height: 3em; flex: none; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">

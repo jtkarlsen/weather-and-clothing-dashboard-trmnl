@@ -12,8 +12,9 @@ scales down to the original TRMNL and to mashup slots.
 - The weather on the way to school (07–11) and in the afternoon (12–17), with wind chill
   ("føles som").
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
-- An outfit grid with one label per garment: **Ha på** (wear it on the way to school) or
-  **I sekken** (pack it, because it is only needed later in the day or is optional).
+- What to wear: **Ha på deg** (needed on the way to school) as large picture cards, and a
+  dashed **I sekken** box for things to pack because they are only needed later in the
+  day or are optional.
 - Optionally, up to three calendar events for the day with start and end times, in
   a strip along the bottom (one line each; long titles are cut off). Paste an iCal link (for Google Calendar: Settings → the calendar →
   "Secret address in iCal format") into the plugin's calendar field. Recurring weekly
