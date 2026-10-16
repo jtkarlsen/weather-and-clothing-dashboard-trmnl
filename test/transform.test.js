@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { build, outfit, feelsLike, utm33, fetchSnowDepth } = require('../src/transform.js');
+const { build, outfit, feelsLike, utm33, fetchSnowDepth, fetchCalendar } = require('../src/transform.js');
 const fixture = require('./fixtures/tromso-2026-10-16.json');
 
 test('morning in Tromsø in October gives a Norwegian outfit plan', () => {
@@ -145,3 +145,14 @@ test('calendar: found in the polled data and passed to the screen', () => {
 function eventsForDateExport(text, date) {
   return require('../src/transform.js').eventsForDate(text, date, 'Europe/Oslo');
 }
+
+test('the calendar is fetched by the transform, webcal links included', async () => {
+  let url;
+  const ics = 'BEGIN:VCALENDAR\nEND:VCALENDAR';
+  const ok = async u => { url = u; return { ok: true, text: async () => ics }; };
+  assert.equal(await fetchCalendar('webcal://p1-caldav.icloud.com/published/2/abc', ok), ics);
+  assert.equal(url, 'https://p1-caldav.icloud.com/published/2/abc');
+  assert.equal(await fetchCalendar('', ok), null);
+  assert.equal(await fetchCalendar('https://x.test/a.ics', async () => ({ ok: true, text: async () => '<html>' })), null);
+  assert.equal(await fetchCalendar('https://x.test/a.ics', async () => { throw new Error('offline'); }), null);
+});

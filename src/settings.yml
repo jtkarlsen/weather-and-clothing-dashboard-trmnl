@@ -13,7 +13,6 @@ polling_verb: get
 framework_version: latest
 polling_url: |-
   https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
-  {{ calendar_url | replace: "webcal://", "https://" }}
 polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
 name: Klær etter været
 description: Hva barna skal ha på seg i dag

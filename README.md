@@ -17,7 +17,7 @@ scales down to the original TRMNL and to mashup slots.
   day or are optional.
 - Optionally, up to three calendar events for the day with start and end times, in
   a strip along the bottom (one line each; long titles are cut off). Paste an iCal link (for Google Calendar: Settings → the calendar →
-  "Secret address in iCal format") into the plugin's calendar field. Recurring weekly
+  "Secret address in iCal format"; an iCloud webcal:// link also works) into the plugin's calendar field. The transform fetches it itself, since TRMNL polling only accepts JSON. Recurring weekly
   events, cancelled dates and all-day events are handled.
 - A reminder at the bottom, such as the reflector vest when it is dark in the morning.
 

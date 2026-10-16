@@ -294,6 +294,24 @@ function findIcs(input, depth = 0) {
   return null;
 }
 
+// TRMNL's polling only accepts JSON, so the iCal feed is fetched here instead.
+// webcal:// links (iCloud) are the same feed over https.
+async function fetchCalendar(url, fetchFn = globalThis.fetch) {
+  url = String(url || '').trim().replace(/^webcal:\/\//i, 'https://');
+  if (!fetchFn || !/^https?:\/\//i.test(url)) return null;
+  try {
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = ctrl && setTimeout(() => ctrl.abort(), 3000);
+    const res = await fetchFn(url, ctrl ? { signal: ctrl.signal } : undefined);
+    if (timer) clearTimeout(timer);
+    if (!res.ok) return null;
+    const text = await res.text();
+    return text.includes('BEGIN:VCALENDAR') ? text : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 function parseIcs(text) {
   const lines = text.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '').split('\n');
   const events = [];
@@ -611,8 +629,11 @@ async function run(input) {
   const timeZone = field(input, 'time_zone', null)
     || (input && input.trmnl && input.trmnl.user && input.trmnl.user.time_zone_iana)
     || 'Europe/Oslo';
-  const snow_depth = await fetchSnowDepth(lat, lon, now, timeZone);
-  return build({ ...input, snow_depth }, now);
+  const [snow_depth, calendar_ics] = await Promise.all([
+    fetchSnowDepth(lat, lon, now, timeZone),
+    fetchCalendar(field(input, 'calendar_url', ''))
+  ]);
+  return build({ ...input, snow_depth, calendar_ics }, now);
 }
 
-if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate, utm33, fetchSnowDepth };
+if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate, utm33, fetchSnowDepth, fetchCalendar };
