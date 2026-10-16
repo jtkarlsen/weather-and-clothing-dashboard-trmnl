@@ -13,7 +13,7 @@ polling_verb: get
 framework_version: latest
 polling_url: |-
   https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
-  {{ calendar_url }}
+  {{ calendar_url | replace: "webcal://", "https://" }}
 polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
 name: Klær etter været
 description: Hva barna skal ha på seg i dag
@@ -41,9 +41,9 @@ custom_fields:
   description: Maks fire desimaler, for eksempel 18.9560.
   default: '18.9560'
 - keyname: calendar_url
-  field_type: url
+  field_type: string
   name: Kalender (iCal-lenke)
-  description: Valgfritt. Viser opptil tre avtaler for dagen. I Google Kalender finner du lenken under Innstillinger, kalenderen, «Hemmelig adresse i iCal-format». Bruk https://, ikke webcal://.
+  description: Valgfritt. Viser opptil tre avtaler for dagen. I Google Kalender finner du lenken under Innstillinger, kalenderen, «Hemmelig adresse i iCal-format». En webcal://-lenke fra iCloud fungerer også.
   optional: true
 - keyname: time_zone
   field_type: time_zone
