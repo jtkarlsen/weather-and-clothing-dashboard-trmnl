@@ -1,0 +1,17 @@
+# TRMNLP configuration
+# {{ env.VARIABLE }} interpolation is available here
+---
+watch:
+  - .trmnlp.yml
+  - src
+
+custom_fields:
+  place: Tromsø
+  lat: '69.6496'
+  lon: '18.9560'
+  time_zone: Europe/Oslo
+
+time_zone: Europe/Oslo
+
+variables:
+  trmnl: {}

@@ -1,0 +1,21 @@
+<div class="layout">
+  {% if ok %}
+  <div class="kc kc-compact kc-q">
+    <div class="kc-now">
+      <svg><use href="#kc-w-{{ now.icon }}"/></svg>
+      <div><div class="kc-t">{{ now.temp }}</div><div class="kc-f">{{ now.feels }}</div></div>
+    </div>
+    <div class="kc-list">
+      {% for it in items %}{% if it.m == "on" %}
+      <span class="kc-chip on"><svg><use href="#kc-{{ it.icon }}"/></svg>{{ it.name }}</span>
+      {% endif %}{% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="kc"><p class="kc-err">{{ error | default: "Fant ingen værdata fra yr.no." }}</p></div>
+  {% endif %}
+</div>
+
+<div class="title_bar">
+  <span class="title">Klær etter været</span>
+</div>

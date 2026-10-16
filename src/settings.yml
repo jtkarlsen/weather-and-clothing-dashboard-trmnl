@@ -1,0 +1,44 @@
+#
+# Changes to this file will be overwritten by `trmnlp pull`.
+#
+# Docs: https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
+#
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+framework_version: latest
+polling_url: https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
+polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
+name: Klær etter været
+description: Hva barna skal ha på seg i dag
+refresh_interval: 60
+serverless_language: node
+custom_fields:
+- keyname: about
+  field_type: author_bio
+  name: Om
+  description: Viser hva barna bør ha på seg i dag, basert på værvarselet fra Yr (MET Norway).
+  github_url: https://github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl
+- keyname: place
+  field_type: string
+  name: Stedsnavn
+  description: Vises øverst på skjermen.
+  default: Tromsø
+- keyname: lat
+  field_type: string
+  name: Breddegrad
+  description: Maks fire desimaler, for eksempel 69.6496.
+  default: '69.6496'
+- keyname: lon
+  field_type: string
+  name: Lengdegrad
+  description: Maks fire desimaler, for eksempel 18.9560.
+  default: '18.9560'
+- keyname: time_zone
+  field_type: time_zone
+  name: Tidssone
+  default: Europe/Oslo
+  optional: true

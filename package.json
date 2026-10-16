@@ -1,0 +1,8 @@
+{
+  "name": "weather-and-clothing-dashboard-trmnl",
+  "private": true,
+  "description": "TRMNL plugin that shows kids what to wear, based on the Yr (MET Norway) forecast",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}
