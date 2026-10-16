@@ -243,7 +243,7 @@ const STRONGER = { no: 0, bag: 1, on: 2 };
 const stronger = (x, y) => (STRONGER[x] >= STRONGER[y] ? x : y);
 
 // One label per garment, because kids get dressed once, in the morning:
-// "Ha på" if it is needed on the way to school, "I sekken" if it is only
+// "Ha på" if it is needed in the morning, "I sekken" if it is only
 // needed later in the day or is optional.
 function dayStatus(m, a) {
   if (m === 'on') return 'on';
@@ -516,13 +516,13 @@ function build(input, now) {
       temp: fmtTemp(m.tMin),
       feels: `føles som ${fmtTemp(m.feels)}`,
       icon: m.kind,
-      text: describe(m, 'på vei til skolen')
+      text: describe(m, 'i formiddag')
     },
     periods: [
       {
         label: PERIODS.morning.label, range: PERIODS.morning.range, icon: m.kind,
         temp: fmtTemp(m.tMin), feels: `føles som ${fmtTemp(m.feels)}`, wind: `Vind ${fmtWind(m.wind)}`,
-        text: `${KIND_TEXT[m.kind]}, vind ${fmtWind(m.wind)}`, say: describe(m, 'på vei til skolen')
+        text: `${KIND_TEXT[m.kind]}, vind ${fmtWind(m.wind)}`, say: describe(m, 'i formiddag')
       },
       {
         label: PERIODS.afternoon.label, range: PERIODS.afternoon.range, icon: a.kind,

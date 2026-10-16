@@ -9,17 +9,17 @@ scales down to the original TRMNL and to mashup slots.
 
 ## What it shows
 
-- The weather on the way to school (07–11) and in the afternoon (12–17), with wind chill
+- The weather in the morning (07–11) and in the afternoon (12–17), with wind chill
   ("føles som").
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
-- What to wear: **Ha på deg** (needed on the way to school) as large picture cards, and a
+- What to wear: **Ha på deg** (needed in the morning) as large picture cards, and a
   dashed **I sekken** box for things to pack because they are only needed later in the
   day or are optional.
 - Optionally, up to three calendar events for the day with start and end times, in
   a strip along the bottom (one line each; long titles are cut off). Paste an iCal link (for Google Calendar: Settings → the calendar →
   "Secret address in iCal format") into the plugin's calendar field. Recurring weekly
   events, cancelled dates and all-day events are handled.
-- A reminder at the bottom, such as the reflector vest when it is dark on the way to school.
+- A reminder at the bottom, such as the reflector vest when it is dark in the morning.
 
 After 17:00 the screen switches to tomorrow's plan.
 
