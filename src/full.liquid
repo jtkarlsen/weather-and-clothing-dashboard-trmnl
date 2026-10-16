@@ -38,7 +38,7 @@
       <section class="kc-fit">
         <div class="kc-fit-hd">
           <h2>Dette skal du ha på deg</h2>
-          <div class="kc-key"><span class="kc-legend">M = morgen, E = ettermiddag</span></div>
+          <div class="kc-key"><span class="kc-legend"><svg><use href="#kc-i-morgen"/></svg>Morgen</span><span class="kc-legend"><svg><use href="#kc-i-ettermiddag"/></svg>Ettermiddag</span></div>
         </div>
         <div class="kc-grid">
           {% for it in items %}
@@ -46,8 +46,8 @@
             <svg><use href="#kc-{{ it.icon }}"/></svg>
             <h3>{{ it.name }}</h3>
             <div class="kc-when">
-              <div class="kc-row"><abbr title="Morgen">M</abbr><span class="kc-pill {{ it.m }}">{{ it.m_label }}</span></div>
-              <div class="kc-row"><abbr title="Ettermiddag">E</abbr><span class="kc-pill {{ it.a }}">{{ it.a_label }}</span></div>
+              <div class="kc-row"><svg><use href="#kc-i-morgen"/></svg><span class="kc-pill {{ it.m }}">{{ it.m_label }}</span></div>
+              <div class="kc-row"><svg><use href="#kc-i-ettermiddag"/></svg><span class="kc-pill {{ it.a }}">{{ it.a_label }}</span></div>
             </div>
           </div>
           {% endfor %}

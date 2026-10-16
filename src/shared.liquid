@@ -51,17 +51,17 @@
   .kc-card svg { width: 100%; height: 4.6em; flex: none; }
   .kc-card h3 { margin: 0; font-size: 1.1em; font-weight: 800; text-align: center; line-height: 1.05; }
   .kc-when { margin-top: auto; width: 100%; display: grid; gap: 0.25em; }
-  .kc-row { display: grid; grid-template-columns: 1.3em 1fr; align-items: center; gap: 0.25em; font-weight: 800; }
-  .kc-row abbr { font-size: 0.85em; text-decoration: none; text-align: center; border: 0.12em solid #000;
-                 border-radius: 0.3em; line-height: 1.25; }
+  .kc-row { display: grid; grid-template-columns: 2em 1fr; align-items: center; gap: 0.2em; font-weight: 800; }
+  .kc-row svg, .kc-legend svg { width: 2em; height: 1.65em; flex: none; }
   .kc-pill { display: block; font-size: 0.9em; font-weight: 800; border-radius: 99em; padding: 0.12em 0.25em; overflow: hidden;
              text-align: center; white-space: nowrap; border: 0.14em solid #000; color: #000; }
-  .kc-pill.on { background: #000; color: #fff; }
+  .kc-pill.on { border-width: 0.2em; }
   .kc-pill.bag { background: #fff; border-style: dashed; }
   .kc-pill.no { border-color: #555; color: #555; text-decoration: line-through; }
   .kc-unit { font-size: 0.8em; font-weight: 700; color: #333; }
-  .kc-legend { font-size: 0.8em; font-weight: 700; color: #333; }
-  .kc-tip { display: flex; align-items: center; gap: 0.6em; background: #000; color: #fff; border-radius: 0.7em;
+  .kc-legend { display: flex; align-items: center; gap: 0.25em; font-size: 0.95em; font-weight: 800; }
+  .kc-legend + .kc-legend { margin-left: 0.6em; }
+  .kc-tip { display: flex; align-items: center; gap: 0.6em; background: #fff; color: #000; border: 0.2em solid #000; border-radius: 0.7em;
             padding: 0.45em 0.9em; font-size: 1.2em; font-weight: 800; }
   .kc-tip svg { width: 1.5em; height: 1.5em; flex: none; }
   .kc-err { margin: auto; text-align: center; font-size: 1.4em; font-weight: 700; max-width: 30em; }
@@ -110,6 +110,9 @@
     <symbol id="kc-caps" viewBox="0 0 80 72"><path d="M14 48a26 26 0 0 1 52 0z" fill="#bbb" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M40 48h34a4 4 0 0 1 0 8H40z" fill="#444" stroke="#000" stroke-width="3" stroke-linejoin="round"/><circle cx="40" cy="22" r="3" fill="#000"/></symbol>
     <symbol id="kc-refleks" viewBox="0 0 80 72"><path d="M24 4h10l6 10 6-10h10l8 14v50H16V18z" fill="#ddd" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M17 40h46M17 52h46" stroke="#000" stroke-width="6"/><path d="M17 40h46M17 52h46" stroke="#fff" stroke-width="2" stroke-dasharray="4 3"/></symbol>
     <symbol id="kc-sekk" viewBox="0 0 80 72"><path d="M28 18v-6a12 8 0 0 1 24 0v6" stroke="#000" stroke-width="4" fill="none"/><rect x="12" y="18" width="56" height="48" rx="10" fill="#999" stroke="#000" stroke-width="3"/><rect x="22" y="32" width="36" height="16" rx="4" fill="#fff" stroke="#000" stroke-width="3"/></symbol>
-    <symbol id="kc-varsel" viewBox="0 0 30 30"><path d="M15 2l13 24H2z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M15 11v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="22" r="1.8" fill="#fff"/></symbol>
+    <symbol id="kc-varsel" viewBox="0 0 30 30"><path d="M15 2l13 24H2z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M15 11v7" stroke="#000" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="22" r="1.8" fill="#000"/></symbol>
+    <!-- part of day: sunrise for the morning, high sun for the afternoon -->
+    <symbol id="kc-i-morgen" viewBox="0 0 32 26"><path d="M2 22h28" stroke="#000" stroke-width="3" stroke-linecap="round"/><path d="M7 22a9 9 0 0 1 18 0z" fill="#bbb" stroke="#000" stroke-width="2.5"/><path d="M16 3v5M5 9l3 3M27 9l-3 3" stroke="#000" stroke-width="2.5" stroke-linecap="round"/></symbol>
+    <symbol id="kc-i-ettermiddag" viewBox="0 0 32 26"><circle cx="16" cy="13" r="6.5" fill="#bbb" stroke="#000" stroke-width="2.5"/><path d="M16 1v3M16 22v3M4 13h3M25 13h3M7.5 4.5l2 2M22.5 19.5l2 2M7.5 21.5l2-2M22.5 6.5l2-2" stroke="#000" stroke-width="2.5" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
