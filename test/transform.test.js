@@ -61,6 +61,17 @@ test('snow depth from NVE decides between winter suit and shell suit', () => {
   assert.ok(has({ ...cold, snow_depth: { '2026-10-15': 20 } }, 'vinterdress'), 'latest earlier day is used');
 });
 
+test('December to February always means winter suit in frost', () => {
+  const cold = JSON.parse(JSON.stringify(fixture));
+  for (const e of cold.properties.timeseries) {
+    e.time = e.time.replace('2026-10-', '2026-12-');
+    e.data.instant.details.air_temperature -= 8;
+    e.data.next_1_hours = { summary: { symbol_code: 'cloudy' }, details: { precipitation_amount: 0 } };
+  }
+  const items = build({ ...cold, snow_depth: { '2026-12-16': 0 } }, new Date('2026-12-16T05:30:00Z')).items;
+  assert.ok(items.some(i => i.key === 'vinterdress'));
+});
+
 test('coordinates are converted to UTM zone 33 for NVE', () => {
   const oslo = utm33(59.9139, 10.7522);
   assert.ok(Math.abs(oslo.x - 262000) < 1500 && Math.abs(oslo.y - 6649500) < 1500, JSON.stringify(oslo));

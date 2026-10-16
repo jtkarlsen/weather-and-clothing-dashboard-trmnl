@@ -488,7 +488,9 @@ function build(input, now) {
 
   // If NVE can't be reached we assume bare ground: a shell suit is the safer guess for the clothes.
   const snowCm = snowDepthOn(input && input.snow_depth, targetDate);
-  const snowOnGround = snowCm !== null && snowCm >= SNOW_DEPTH_CM;
+  // In midwinter we don't trust a missing or odd NVE value: winter suit regardless.
+  const midwinter = WINTER_MONTHS.includes(Number(targetDate.slice(5, 7)));
+  const snowOnGround = midwinter || (snowCm !== null && snowCm >= SNOW_DEPTH_CM);
   const items = mergeOutfits(outfit(m, { snowOnGround }), outfit(a, { snowOnGround }));
 
   const ics = findIcs(input);
@@ -544,6 +546,7 @@ function build(input, now) {
 // The API wants UTM zone 33N coordinates.
 
 const SNOW_DEPTH_CM = 5; // at least this much snow before a winter suit makes sense
+const WINTER_MONTHS = [12, 1, 2]; // always winter suit in frost, whatever NVE says
 
 function utm33(lat, lon) {
   const a = 6378137, f = 1 / 298.257222101, k0 = 0.9996, lon0 = 15 * Math.PI / 180;

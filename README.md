@@ -51,7 +51,8 @@ otherwise it suggests a parka suit with fleece, or a thick wool sweater when it 
 Yr's forecast does not say whether snow is lying, so the transform also asks NVE's
 [seNorge](https://www.senorge.no) model for the snow depth at your coordinates, through the
 open [GridTimeSeries API](https://api.nve.no/doc/gridtimeseries-data-gts/) (Norway only,
-NLOD licence). If NVE can't be reached, it assumes bare ground.
+NLOD licence). If NVE can't be reached, it assumes bare ground. In December, January and
+February it suggests a winter suit in frost regardless of what NVE says.
 
 ## Install on TRMNL
 
