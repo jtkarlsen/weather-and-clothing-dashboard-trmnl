@@ -359,8 +359,16 @@ function build(input, now) {
       text: describe(m, 'på vei til skolen')
     },
     periods: [
-      { label: PERIODS.morning.label, range: PERIODS.morning.range, temp: fmtTemp(m.tMin), text: `${KIND_TEXT[m.kind]}, vind ${fmtWind(m.wind)}`, icon: m.kind },
-      { label: PERIODS.afternoon.label, range: PERIODS.afternoon.range, temp: fmtTemp(a.tMax), text: `${KIND_TEXT[a.kind]}, vind ${fmtWind(a.wind)}`, icon: a.kind }
+      {
+        label: PERIODS.morning.label, range: PERIODS.morning.range, icon: m.kind,
+        temp: fmtTemp(m.tMin), feels: `føles som ${fmtTemp(m.feels)}`, wind: `Vind ${fmtWind(m.wind)}`,
+        text: `${KIND_TEXT[m.kind]}, vind ${fmtWind(m.wind)}`, say: describe(m, 'på vei til skolen')
+      },
+      {
+        label: PERIODS.afternoon.label, range: PERIODS.afternoon.range, icon: a.kind,
+        temp: fmtTemp(a.tMax), feels: `føles som ${fmtTemp(a.feels)}`, wind: `Vind ${fmtWind(a.wind)}`,
+        text: `${KIND_TEXT[a.kind]}, vind ${fmtWind(a.wind)}`, say: describe(a, 'i ettermiddag')
+      }
     ],
     strip,
     sun: sun.text,

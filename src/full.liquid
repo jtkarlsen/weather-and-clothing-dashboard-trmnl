@@ -8,18 +8,16 @@
 
     <div class="kc-main">
       <section class="kc-wx">
-        <div class="kc-nowbox">
-          <div class="kc-now">
-            <svg><use href="#kc-w-{{ now.icon }}"/></svg>
-            <div><div class="kc-t">{{ now.temp }}</div><div class="kc-f">{{ now.feels }}</div></div>
+        {% for p in periods %}
+        <div class="kc-pc">
+          <div class="kc-pc-hd"><b>{{ p.label }}</b><small>kl. {{ p.range }}</small></div>
+          <div class="kc-pc-main">
+            <svg><use href="#kc-w-{{ p.icon }}"/></svg>
+            <div><div class="kc-pc-t">{{ p.temp }}</div><div class="kc-pc-f">{{ p.feels }}</div></div>
           </div>
-          <p class="kc-say">{{ now.text }}</p>
+          <p class="kc-pc-say">{{ p.say }}</p>
         </div>
-        <div class="kc-parts">
-          {% for p in periods %}
-          <div class="kc-part"><b>{{ p.label }}<small>{{ p.range }}</small></b><div class="kc-v"><strong>{{ p.temp }}</strong>{{ p.text }}</div></div>
-          {% endfor %}
-        </div>
+        {% endfor %}
         <div class="kc-hours">
           <h2>Time for time <span class="kc-unit">nedbør i mm</span></h2>
           <div class="kc-strip">
