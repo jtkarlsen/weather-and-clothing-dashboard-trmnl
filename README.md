@@ -42,12 +42,14 @@ at 4° or colder, and a reflector vest whenever the sun is down.
 
 ## Install on TRMNL
 
-With [trmnlp](https://github.com/usetrmnl/trmnlp):
+With [trmnlp](https://github.com/usetrmnl/trmnlp). The `bin/trmnlp` script in this repo
+runs it through Docker, so you only need [Docker](https://docs.docker.com/get-docker/)
+running (or `gem install trmnl_preview` with Ruby 4.0+):
 
 ```sh
-trmnlp login
-trmnlp push        # creates the private plugin; commit the id it adds to src/settings.yml
-trmnlp serve       # local preview at http://localhost:4567
+bin/trmnlp login   # paste your API key from trmnl.com > Account
+bin/trmnlp push    # creates the private plugin; commit the id it adds to src/settings.yml
+bin/trmnlp serve   # local preview at http://localhost:4567
 ```
 
 Then open the plugin on trmnl.com, set your place and coordinates, and add it to your
