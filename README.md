@@ -71,6 +71,11 @@ bin/trmnlp serve   # local preview at http://localhost:4567
 Then open the plugin on trmnl.com, set your place and coordinates, and add it to your
 playlist.
 
+The plugin on trmnl.com is connected to this repository (GitHub sync, repository root),
+so changes merged to `main` reach TRMNL without `bin/trmnlp push`. TRMNL also commits
+its own copy of `src/settings.yml` back to `main` when settings change on trmnl.com, so
+pull before editing that file.
+
 ## Tests
 
 ```sh
