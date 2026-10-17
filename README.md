@@ -27,7 +27,7 @@ After 17:00 the screen switches to tomorrow's plan.
 
 | File | Purpose |
 |---|---|
-| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, calendar, time zone) |
+| `src/settings.yml` | Polling setup and the form fields (place name, latitude, longitude, altitude, calendar, time zone) |
 | `src/transform.js` | Serverless transform. Turns the Yr forecast into a small outfit plan |
 | `src/shared.liquid` | Styles and the SVG icons, shared by every view |
 | `src/full.liquid` | Full screen |
@@ -35,10 +35,12 @@ After 17:00 the screen switches to tomorrow's plan.
 | `test/` | Tests for the transform, with a sample forecast for Tromsø |
 
 TRMNL polls
-`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}`
+`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}&altitude={{ altitude }}`
 every hour with a `User-Agent` that identifies this project, as MET Norway's
 [terms of service](https://api.met.no/doc/TermsOfService) require. Coordinates should
-have at most four decimals.
+have at most four decimals. The altitude (whole metres, shown on the place's page on
+yr.no) matters: without it MET guesses the height from its model terrain, which can make
+the temperature a few degrees off. The defaults are Bjerkvik (68.5492, 17.5571, 5 m).
 
 The clothing rules live in `outfit()` in `src/transform.js`. They work from the coldest
 forecast temperature in each part of the day, the precipitation, and whether it is

@@ -435,15 +435,15 @@ function build(input, now) {
   const timeZone = field(input, 'time_zone', null)
     || (input && input.trmnl && input.trmnl.user && input.trmnl.user.time_zone_iana)
     || 'Europe/Oslo';
-  const place = field(input, 'place', 'Tromsø');
+  const place = field(input, 'place', 'Bjerkvik');
   const forecast = findForecast(input);
   if (!forecast) {
     return { ok: false, error: 'Fant ingen værdata fra yr.no. Sjekk breddegrad og lengdegrad.', place };
   }
 
   const coords = (forecast.geometry && forecast.geometry.coordinates) || [];
-  const lat = Number(field(input, 'lat', coords[1] || 69.6496));
-  const lon = Number(field(input, 'lon', coords[0] || 18.956));
+  const lat = Number(field(input, 'lat', coords[1] || 68.5492));
+  const lon = Number(field(input, 'lon', coords[0] || 17.5571));
 
   const nowLocal = localParts(now, timeZone);
   const tomorrow = nowLocal.hour >= SWITCH_TO_TOMORROW_AT;

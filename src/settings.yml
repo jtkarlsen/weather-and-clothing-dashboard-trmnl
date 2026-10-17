@@ -12,7 +12,7 @@ static_data: ''
 polling_verb: get
 framework_version: latest
 polling_url: |-
-  https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
+  https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}&altitude={{ altitude }}
 polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
 name: Klær etter været
 description: Hva barna skal ha på seg i dag
@@ -28,17 +28,22 @@ custom_fields:
   field_type: string
   name: Stedsnavn
   description: Vises øverst på skjermen.
-  default: Tromsø
+  default: Bjerkvik
 - keyname: lat
   field_type: string
   name: Breddegrad
-  description: Maks fire desimaler, for eksempel 69.6496.
-  default: '69.6496'
+  description: Maks fire desimaler, for eksempel 68.5492.
+  default: '68.5492'
 - keyname: lon
   field_type: string
   name: Lengdegrad
-  description: Maks fire desimaler, for eksempel 18.9560.
-  default: '18.9560'
+  description: Maks fire desimaler, for eksempel 17.5571.
+  default: '17.5571'
+- keyname: altitude
+  field_type: string
+  name: Høyde over havet (meter)
+  description: Hele meter, for eksempel 5. Gir riktigere temperatur, særlig i bakker og daler. Yr viser høyden på stedssiden.
+  default: '5'
 - keyname: calendar_url
   field_type: string
   name: Kalender (iCal-lenke)

@@ -6,9 +6,10 @@ watch:
   - src
 
 custom_fields:
-  place: Tromsø
-  lat: '69.6496'
-  lon: '18.9560'
+  place: Bjerkvik
+  lat: '68.5492'
+  lon: '17.5571'
+  altitude: '5'
   time_zone: Europe/Oslo
 
 time_zone: Europe/Oslo
