@@ -3,7 +3,7 @@
   <div class="kc kc-compact kc-q">
     <div class="kc-now">
       <svg><use href="#kc-w-{{ now.icon }}"/></svg>
-      <div><div class="kc-t">{{ now.temp }}</div><div class="kc-f">{{ now.feels }}</div></div>
+      <div class="kc-t">{{ now.temp }}</div>
     </div>
     <div class="kc-list">
       {% for it in items %}{% if it.status == "on" %}

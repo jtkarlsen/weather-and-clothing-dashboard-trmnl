@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { build, outfit, feelsLike, utm33, fetchSnowDepth, fetchCalendar } = require('../src/transform.js');
+const { build, outfit, utm33, fetchSnowDepth, fetchCalendar } = require('../src/transform.js');
 const fixture = require('./fixtures/tromso-2026-10-16.json');
 
 test('morning in Tromsø in October gives a Norwegian outfit plan', () => {
@@ -39,11 +39,11 @@ test('one variant per garment, so never two kinds of mittens', () => {
 });
 
 test('dry frost without snow on the ground means a shell suit with thick wool', () => {
-  const o = outfit({ tMin: -8, tMax: -5, feels: -14, wind: 3, precip: 0, kind: 'clear', dark: true });
+  const o = outfit({ tMin: -8, tMax: -5, wind: 3, precip: 0, kind: 'clear', dark: true });
   assert.equal(o.vinterdress, undefined);
   assert.equal(o.parkdress, 'on');
   assert.equal(o.ullgenser_tykk, 'on');
-  const mild = outfit({ tMin: -2, tMax: 0, feels: -3, wind: 2, precip: 0, kind: 'cloudy', dark: false });
+  const mild = outfit({ tMin: -2, tMax: 0, wind: 2, precip: 0, kind: 'cloudy', dark: false });
   assert.equal(mild.parkdress, 'on');
   assert.equal(mild.fleece, 'on');
 });
@@ -89,7 +89,7 @@ test('snow depth is fetched from NVE and survives failures', async () => {
 });
 
 test('dry frost with snow on the ground means winter suit and winter boots', () => {
-  const o = outfit({ tMin: -8, tMax: -5, feels: -14, wind: 3, precip: 0, kind: 'clear', dark: true }, { snowOnGround: true });
+  const o = outfit({ tMin: -8, tMax: -5, wind: 3, precip: 0, kind: 'clear', dark: true }, { snowOnGround: true });
   assert.equal(o.vinterdress, 'on');
   assert.equal(o.vinterstovler, 'on');
   assert.equal(o.ullgenser, 'on');
@@ -97,15 +97,17 @@ test('dry frost with snow on the ground means winter suit and winter boots', () 
 });
 
 test('warm and sunny means light clothes and a cap', () => {
-  const o = outfit({ tMin: 17, tMax: 22, feels: 17, wind: 2, precip: 0, kind: 'clear', dark: false });
+  const o = outfit({ tMin: 17, tMax: 22, wind: 2, precip: 0, kind: 'clear', dark: false });
   assert.equal(o.caps, 'on');
   assert.equal(o.joggesko, 'on');
   assert.equal(o.lue, undefined);
 });
 
-test('wind makes it feel colder', () => {
-  assert.ok(feelsLike(1, 7) < -3);
-  assert.equal(feelsLike(15, 7), 15);
+test('no wind chill: the temperature shown is the forecast temperature', () => {
+  const r = build(fixture, new Date('2026-10-16T04:30:00Z'));
+  for (const p of r.periods) assert.equal(p.feels, undefined);
+  assert.equal(r.now.feels, undefined);
+  assert.ok(!JSON.stringify(r).includes('føles'));
 });
 
 test('missing forecast gives a readable error', () => {

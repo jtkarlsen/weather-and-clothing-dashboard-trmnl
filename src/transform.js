@@ -104,14 +104,6 @@ function sunTimes(dayStartUtc, lat, lon, timeZone) {
 
 // ---------- weather ----------
 
-// Wind chill (Environment Canada / JAG-TI), wind in m/s.
-function feelsLike(t, windMs) {
-  const v = windMs * 3.6;
-  if (t > 10 || v < 4.8) return t;
-  const vp = Math.pow(v, 0.16);
-  return 13.12 + 0.6215 * t - 11.37 * vp + 0.3965 * t * vp;
-}
-
 const SYMBOL_RANK = ['clear', 'partly', 'cloudy', 'fog', 'rain', 'sleet', 'snow', 'thunder'];
 
 function symbolKind(code) {
@@ -128,13 +120,11 @@ function symbolKind(code) {
 
 function summarize(hours) {
   const temps = hours.map(h => h.temp);
-  const feels = hours.map(h => feelsLike(h.temp, h.wind));
   const kind = hours.map(h => symbolKind(h.symbol))
     .reduce((a, b) => (SYMBOL_RANK.indexOf(b) > SYMBOL_RANK.indexOf(a) ? b : a), 'clear');
   return {
     tMin: Math.min(...temps),
     tMax: Math.max(...temps),
-    feels: Math.min(...feels),
     wind: Math.max(...hours.map(h => h.wind)),
     precip: hours.reduce((s, h) => s + h.precip, 0),
     kind,
@@ -152,10 +142,10 @@ const KIND_TEXT = {
 
 function describe(s, when) {
   const words = [];
-  if (s.feels <= -10) words.push('Veldig kaldt');
-  else if (s.feels <= 2) words.push('Kaldt');
-  else if (s.feels <= 10) words.push('Kjølig');
-  else if (s.feels <= 18) words.push('Mildt');
+  if (s.tMin <= -10) words.push('Veldig kaldt');
+  else if (s.tMin <= 2) words.push('Kaldt');
+  else if (s.tMin <= 10) words.push('Kjølig');
+  else if (s.tMin <= 18) words.push('Mildt');
   else words.push('Varmt');
   const wet = ['rain', 'sleet', 'thunder'].includes(s.kind) && s.precip >= 0.2;
   if (wet) words.push('vått');
@@ -198,7 +188,7 @@ const CATALOGUE = [
 // a shell suit (parkdress) with fleece or thick wool under instead.
 function outfit(s, { snowOnGround = false } = {}) {
   const out = {};
-  const f = s.feels;
+  const f = s.tMin; // the forecast temperature as Yr reports it, no wind chill
   const wet = (['rain', 'sleet', 'thunder'].includes(s.kind) && s.precip >= 0.2) || s.precip >= 0.5;
   const rainy = ['rain', 'sleet', 'thunder'].includes(s.kind);
 
@@ -532,19 +522,18 @@ function build(input, now) {
     updated: updated ? clock(new Date(updated), timeZone) : clock(now, timeZone),
     now: {
       temp: fmtTemp(m.tMin),
-      feels: `føles som ${fmtTemp(m.feels)}`,
       icon: m.kind,
       text: describe(m, 'i formiddag')
     },
     periods: [
       {
         label: PERIODS.morning.label, range: PERIODS.morning.range, icon: m.kind,
-        temp: fmtTemp(m.tMin), feels: `føles som ${fmtTemp(m.feels)}`, wind: `Vind ${fmtWind(m.wind)}`,
+        temp: fmtTemp(m.tMin), wind: `Vind ${fmtWind(m.wind)}`,
         text: `${KIND_TEXT[m.kind]}, vind ${fmtWind(m.wind)}`, say: describe(m, 'i formiddag')
       },
       {
         label: PERIODS.afternoon.label, range: PERIODS.afternoon.range, icon: a.kind,
-        temp: fmtTemp(a.tMax), feels: `føles som ${fmtTemp(a.feels)}`, wind: `Vind ${fmtWind(a.wind)}`,
+        temp: fmtTemp(a.tMax), wind: `Vind ${fmtWind(a.wind)}`,
         text: `${KIND_TEXT[a.kind]}, vind ${fmtWind(a.wind)}`, say: describe(a, 'i ettermiddag')
       }
     ],
@@ -636,4 +625,4 @@ async function run(input) {
   return build({ ...input, snow_depth, calendar_ics }, now);
 }
 
-if (typeof module !== 'undefined') module.exports = { run, build, feelsLike, sunElevation, outfit, eventsForDate, utm33, fetchSnowDepth, fetchCalendar };
+if (typeof module !== 'undefined') module.exports = { run, build, sunElevation, outfit, eventsForDate, utm33, fetchSnowDepth, fetchCalendar };

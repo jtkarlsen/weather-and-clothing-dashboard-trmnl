@@ -9,8 +9,8 @@ scales down to the original TRMNL and to mashup slots.
 
 ## What it shows
 
-- The weather in the morning (07–11) and in the afternoon (12–17), with wind chill
-  ("føles som").
+- The weather in the morning (07–11) and in the afternoon (12–17), using the temperature
+  as Yr reports it (no wind chill).
 - Hour by hour temperature and precipitation, and whether it is dark or light outside.
 - What to wear: **Ha på deg** (needed in the morning) as large picture cards, and a
   dashed **I sekken** box for things to pack because they are only needed later in the
@@ -41,11 +41,11 @@ every hour with a `User-Agent` that identifies this project, as MET Norway's
 have at most four decimals.
 
 The clothing rules live in `outfit()` in `src/transform.js`. They work from the coldest
-"feels like" temperature in each part of the day, the precipitation, and whether it is
+forecast temperature in each part of the day, the precipitation, and whether it is
 dark. For example: lined rain gear at 6° or colder, mittens at 4° or colder, and a
 reflector vest whenever the sun is down. In dry frost it suggests a winter suit only when
 there is at least 5 cm of snow on the ground (winter suits get torn on bare ground);
-otherwise it suggests a parka suit with fleece, or a thick wool sweater when it feels like
+otherwise it suggests a parka suit with fleece, or a thick wool sweater when it is
 −5° or colder.
 
 Yr's forecast does not say whether snow is lying, so the transform also asks NVE's
