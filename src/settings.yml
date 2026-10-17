@@ -1,23 +1,18 @@
-#
-# Changes to this file will be overwritten by `trmnlp pull`.
-#
-# Docs: https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
-#
 ---
-id: 509337
 strategy: polling
 no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
 framework_version: latest
-polling_url: |-
-  https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
-polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
-name: Klær etter været
-description: Hva barna skal ha på seg i dag
-refresh_interval: 60
 serverless_language: node
+refresh_interval_floor: ''
+polling_url: https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{ lat }}&lon={{ lon }}
+polling_headers: 'User-Agent: weather-and-clothing-dashboard-trmnl/1.0 github.com/jtkarlsen/weather-and-clothing-dashboard-trmnl'
+polling_body: ''
+id: 509337
+oauth_enabled: 'false'
+oauth_pkce_enabled: 'no'
 custom_fields:
 - keyname: about
   field_type: author_bio
@@ -49,3 +44,6 @@ custom_fields:
   name: Tidssone
   default: Europe/Oslo
   optional: true
+name: Klær etter været
+description: Hva barna skal ha på seg i dag
+refresh_interval: 60
